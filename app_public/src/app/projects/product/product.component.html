@@ -1,0 +1,31 @@
+<!-- <p><a href="/prj/{{nowPrjID}}">{{nowPrj?.name}}</a> > {{ "product_board.breadcrumb_nav" | translate }} > <a href="./">{{"product_board." + nowPrd?.id + ".name" | translate}}</a></p>
+<!-- <h1>{{nowPrd?.name}} <button mat-icon-button (click)="onEditBoard(nowPrd)"><mat-icon>edit</mat-icon></button></h1> --
+<h1>{{"product_board." + nowPrd?.id + ".name" | translate}} <button mat-icon-button (click)="onEditBoard(nowPrd)"><mat-icon>edit</mat-icon></button></h1>
+<!-- <p>
+  The Product Backlog is an ordered list of everything that is known to be needed in the product.
+  It is the single source of requirements for any changes to be made to the product. The Product
+  Owner is responsible for the Product Backlog, including its content, availability, and ordering.
+</p> --
+<!-- <p>{{nowPrd?.description}}</p> --
+<p>{{"product_board." + nowPrd?.id + ".description" | translate}}</p>
+<div *ngIf="usrStorys">
+  <mat-card mat-ripple *ngFor="let usrStory of usrStorys" class="mat-elevation-z4" (click)="onModifyUsrStory(usrStory)">
+    <mat-card-header>
+      <mat-card-title *ngIf="usrStory.title">{{usrStory.title}}</mat-card-title>
+      <mat-card-subtitle *ngIf="usrStory.subTitle">{{usrStory.subTitle}}</mat-card-subtitle>
+      <button mat-icon-button color="warn"
+      (click)="onRemoveUsrStory(usrStory, $event);"
+      (mousedown)="$event.stopPropagation();"
+      aria-label="Toggle menu" class="more-button">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content class="last-child">
+      <p>{{usrStory.content || "&nbsp;"}}</p>
+      <p *ngIf="usrStory.totalTime">Estimated time to spend: {{usrStory.totalTimeString}}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+<button mat-icon-button (click)="onCreateUsrStory()">
+  <mat-icon>add_circle_outline</mat-icon>
+</button> -->

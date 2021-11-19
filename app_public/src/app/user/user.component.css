@@ -1,0 +1,43 @@
+
+body {
+    position: relative;
+}
+
+.user-page {
+    position: absolute;
+    /* top: 50%;
+    transform: translateY(-50%); */
+    bottom: 50%;
+    width: 100%;
+}
+
+.user-info {
+    margin: 20px;
+}
+
+amplify-sign-out {
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    margin: auto;
+}
+table caption h2 {
+    margin: 0 0 10px;
+    text-align: left;
+}
+tr {
+    font-size: 1rem;
+    vertical-align: bottom;
+}
+tr:first-child {
+    vertical-align: top;
+}
+tr b {
+    float: right;
+    text-align: end;
+}
+td:not(:first-child) {
+    padding-left: 20px;
+}

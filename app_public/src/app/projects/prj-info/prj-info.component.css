@@ -1,0 +1,25 @@
+.members span:not(:first-child)::before {
+    content: ", ";
+}
+
+p {
+    white-space: pre-wrap;
+}
+
+table {
+    margin: auto;
+}
+tr {
+    font-size: 1rem;
+    vertical-align: bottom;
+}
+tr:first-child {
+    vertical-align: top;
+}
+tr b {
+    float: right;
+    text-align: end;
+}
+td:not(:first-child) {
+    padding-left: 20px;
+}

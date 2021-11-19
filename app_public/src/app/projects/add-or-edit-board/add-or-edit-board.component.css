@@ -1,0 +1,82 @@
+mat-toolbar span {
+    margin-left: 20px;
+}
+
+.mat-stepper-horizontal {
+    margin-top: 8px;
+}
+
+.mat-form-field {
+    margin-top: 16px;
+}
+
+.mat-radio-button {
+    margin-left: 16px;
+}
+
+.select-type {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.select-type mat-radio-group {
+    margin-bottom: 12px;
+}
+.delete-board {
+    margin-top: 10px;
+}
+.delete-board button {
+    float: right;
+}
+.delete-board button mat-icon {
+    vertical-align: sub;
+}
+.full-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    max-height: 50vh;
+    padding-top: 40px;
+}
+.full-info > mat-form-field {
+    width: 80%;
+}
+.full-info > mat-form-field textarea {
+    height: 100px;
+}
+.full-info .langs {
+    width: 80%;
+}
+.full-info .langs .lang-single mat-form-field + mat-form-field {
+    display: block;
+}
+
+button[matStepperPrevious] {
+    float: left;
+}
+button[matStepperNext] {
+    float: right;
+}
+
+/* @import '~src/styles.scss';
+// $primary: map-get($theme, primary);
+.warn-color {
+    color: mat-color($app-warn) !important;
+} */
+
+.done-page button ~ button {
+    margin-left: 16px;
+}
+.done-page button { float: left; }
+.done-page button[color="primary"] {
+    float: right;
+}
+.done-page p {
+    width: 100%;
+    float: left;
+    text-align: center;
+}

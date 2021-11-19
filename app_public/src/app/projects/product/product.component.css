@@ -1,0 +1,23 @@
+
+.mat-card {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.ml-10 {
+    margin-left: 10px;
+}
+
+.mat-card .last-child {
+    margin-bottom: 0;
+}
+
+.more-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+.mat-card .last-child {
+    margin-bottom: 0;
+}

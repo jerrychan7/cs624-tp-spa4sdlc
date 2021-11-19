@@ -1,0 +1,44 @@
+
+mat-sidenav-container {
+    height: calc(100vh - 56px);
+}
+
+mat-sidenav-content {
+    padding: 16px;
+}
+mat-nav-list {
+    padding-top: 0;
+}
+
+mat-sidenav {
+    width: 240px;
+}
+
+.mat-expansion-panel-header {
+    padding: 0 16px;
+    font-size: 16px;
+}
+
+app-loading-screen {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+mat-sidenav mat-icon {
+    margin-right: 10px;
+}
+
+
+::ng-deep .parametersPanel > .mat-expansion-panel-content > .mat-expansion-panel-body {
+    padding: 0 !important;
+}
+::ng-deep .parametersPanel > .mat-expansion-panel-content .mat-list-item-content {
+    padding: 0 16px 0 32px !important;
+}
+
+.create-board-button {
+    font-size: 14px;
+    font-weight: 500;
+}

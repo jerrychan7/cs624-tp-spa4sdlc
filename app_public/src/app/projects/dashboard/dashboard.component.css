@@ -1,0 +1,32 @@
+.no-project {
+    text-align: center;
+}
+
+.no-project .mat-icon {
+    font-size: 20vw;
+    height: 20vw;
+    width: 20vw;
+}
+
+.mat-card {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.ml-10 {
+    margin-left: 10px;
+}
+
+.more-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+.mat-card .last-child {
+    margin-bottom: 0;
+}
+
+.members span:not(:first-child)::before {
+    content: ", ";
+}

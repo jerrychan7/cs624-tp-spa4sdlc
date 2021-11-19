@@ -1,0 +1,83 @@
+<!-- <mat-toolbar>
+  <button mat-stroked-button (click)="onClose()"><mat-icon>clear</mat-icon></button>
+  <span>{{ "add_or_edit_board.title." + (data.board?.id? "modify": "new") | translate }}</span>
+</mat-toolbar>
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>{{ "add_or_edit_board.select_board_type" | translate }}</ng-template>
+      <button mat-stroked-button matStepperNext [disabled]="firstFormGroup.invalid">{{ "add_or_edit_board.next_btn" | translate }}</button>
+      <div class="select-type">
+        <mat-radio-group formControlName="category" required [disabled]="!!data.board?.id">
+          <mat-label><b>{{ "add_or_edit_board.board_type_text" | translate }} <span class="warn-color">*</span></b></mat-label>
+          <mat-radio-button value="Product">{{ "add_or_edit_board.board_type.product" | translate }}</mat-radio-button>
+          <mat-radio-button value="Sprint">{{ "add_or_edit_board.board_type.sprint" | translate }}</mat-radio-button>
+        </mat-radio-group>
+        <p>{{ "add_or_edit_board.cannot_modified" | translate }}</p>
+      </div>
+      <div *ngIf="!!data.board?.id" class="delete-board">
+        {{ "add_or_edit_board.delete_board_text" | translate }}
+        <button mat-button color="warn" (click)="onDelete()"><mat-icon>delete</mat-icon>{{ "add_or_edit_board.delete_btn" | translate }}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>{{ "add_or_edit_board.fill_board_info" | translate }}</ng-template>
+      <button mat-stroked-button matStepperPrevious>{{ "add_or_edit_board.back_btn" | translate }}</button>
+      <button mat-stroked-button matStepperNext [disabled]="secondFormGroup.invalid">{{ "add_or_edit_board.next_btn" | translate }}</button>
+      <div class="full-info">
+        <mat-form-field>
+          <mat-label>{{ "add_or_edit_board.board_title" | translate }}</mat-label>
+          <input matInput formControlName="name" required />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ "add_or_edit_board.board_description" | translate }}</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+        <mat-form-field *ngIf="formArrayLangs.controls.length">
+          <mat-label>{{ "add_or_edit_board.language_used_above" | translate }}</mat-label>
+          <input matInput formControlName="lang" [matAutocomplete]="auto" aria-label="{{ 'add_or_edit_board.language_used_above' | translate }}" />
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+              <mat-option *ngFor="let option of filteredOptions[0] | async" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <div formArrayName="langs" class="langs">
+          <div *ngFor="let langFormGroup of formArrayLangs.controls; let i = index" [formGroupName]="i" class="lang-single">
+            <button mat-icon-button (click)="onDelLang(i)"><mat-icon>remove_circle_outline</mat-icon></button>
+            <mat-form-field>
+              <mat-label>{{ "add_or_edit_board.language" | translate }}</mat-label>
+              <input matInput formControlName="lang" [matAutocomplete]="auto" aria-label="language" />
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions[i+1] | async" [value]="option">
+                  {{option}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>{{ "add_or_edit_board.board_title" | translate }}</mat-label>
+              <input matInput formControlName="name" required />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>{{ "add_or_edit_board.board_description" | translate }}</mat-label>
+              <textarea matInput formControlName="description"></textarea>
+            </mat-form-field>
+            <my-form-sub-component [secondFormGroup]="secondFormGroup.controls.langs.controls[i]"></my-form-sub-component>
+          </div>
+        </div>
+        <button mat-button (click)="onAddLang()"><mat-icon>add</mat-icon>{{ "add_or_edit_board.add_new_language_btn" | translate }}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>{{ "add_or_edit_board.done" | translate }}</ng-template>
+    <div class="done-page">
+      <button mat-stroked-button matStepperPrevious>{{ "add_or_edit_board.back_btn" | translate }}</button>
+      <button mat-raised-button (click)="onReset()" color="warn">{{ "add_or_edit_board.reset_btn" | translate }}</button>
+      <button mat-raised-button (click)="onDone()" color="primary">{{ "add_or_edit_board.done_btn." + (data.board?.id? "modify": "create") | translate }}</button>
+      <p>{{ "add_or_edit_board.done_text" | translate }}</p>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper> -->
