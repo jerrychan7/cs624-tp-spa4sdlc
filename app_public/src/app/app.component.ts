@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'spa4sdlc';
+  subcomponentRef: any;
+  onActivate(componentRef: any) {
+    this.subcomponentRef = componentRef;
+  }
+  onChangeLang(lang: string) {
+    // this.translate.use(lang);
+  }
 }
