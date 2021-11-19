@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { TranslateService } from '@ngx-translate/core';
+import { ProjectsService } from './projects.service';
+import { AddOrEditBoardComponent } from './add-or-edit-board/add-or-edit-board.component';
 
 @Component({
   selector: 'app-projects',
@@ -16,6 +19,8 @@ export class ProjectsComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     public translate: TranslateService,
+    private prjsService: ProjectsService,
+    private router: Router,
   ) {
     translate.setTranslation("en", {
       "sideNav": {
@@ -40,8 +45,46 @@ export class ProjectsComponent implements OnInit {
   prds: Array<any> = [];
   sprs: Array<any> = [];
 
-  ngOnInit(): void {
+  async initBoard() {
+    let boards = await this.prjsService.getAllBoardByCurrentPrj();
+    if (!boards) return;
+    this.sprs = []; this.prds = [];
+    boards.forEach(board => {
+      switch(board.category) {
+      case "Product":
+        this.prds.push(board);
+        break;
+      case "Sprint":
+        this.sprs.push(board);
+        break;
+      }
+    });
+    this.sprs.sort((a, b) => a.createdTime - b.createdTime);
+    this.prds.sort((a, b) => a.createdTime - b.createdTime);
   }
 
-  onCreateBoard() {}
+  ngOnInit(): void {
+    this.prjsService.onProjectChange(async (prj: any) => {
+      if (!prj) return;
+      await this.initBoard();
+    });
+    // TODO: OnDeleteBoardListener
+  }
+
+  onCreateBoard() {
+    const dialogConfig = new MatDialogConfig();
+    // dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "60%";
+    dialogConfig.data = { project: this.prjsService.currentPrj };
+    const dialogRef = this.dialog.open(AddOrEditBoardComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(async board => {
+      if (!board) return;
+      await this.initBoard();
+      this.router.navigateByUrl(`/prj/${
+        this.prjsService.currentPrj?.id || ""}/${
+          board.category === "Product"? "prd": "spr"}/${
+            board.id}`);
+    });
+  }
 }
