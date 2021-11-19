@@ -1,28 +1,13 @@
 <p>prj-info works!</p>
-<p><a href="/prj/{{nowPrjID}}">{{project?.name}}</a> > {{ "project_info.breadcrumb_nav" }}</p>
-
-<h1>{{ "project_info.title" }}</h1>
-<table>
-  <tr><td><b>{{ "project_info.project_id" }}</b></td>             <td>{{nowPrjID}}</td></tr>
-  <tr><td><b>{{ "project_info.name" }}</b></td>                   <td>{{project?.name}}</td></tr>
-  <tr><td><b>{{ "project_info.created_at" }}</b></td>             <td>{{project?.createdAtString}}</td></tr>
-  <tr><td><b>{{ "project_info.first_sprint_start_at" }}</b></td>  <td>{{project?.firstSprintStartAtString}}</td></tr>
-  <tr><td><b>{{ "project_info.sprint_cycle_length" }}</b></td>    <td>{{project?.cycleString}}</td></tr>
-  <tr><td><b>{{ "project_info.description" }}</b></td>            <td>{{project?.description}}</td></tr>
-  <tr><td><b>{{ "project_info.members" }}</b></td>                <td><span *ngFor="let members of project?.members.items">{{members.member?.username}}</span></td></tr>
-</table>
-
-<!-- <p>prj-info works!</p>
 <p><a href="/prj/{{nowPrjID}}">{{project?.name}}</a> > {{ "project_info.breadcrumb_nav" | translate }}</p>
 
-<h1>{{ "project_info.title" | translate }}</h1>
+<h1 translate>project_info.title</h1>
 <table>
-  <tr><td><b>{{ "project_info.project_id" | translate }}</b></td>             <td>{{nowPrjID}}</td></tr>
-  <tr><td><b>{{ "project_info.name" | translate }}</b></td>                   <td>{{project?.name}}</td></tr>
-  <tr><td><b>{{ "project_info.created_at" | translate }}</b></td>             <td>{{project?.createdAtString}}</td></tr>
-  <tr><td><b>{{ "project_info.first_sprint_start_at" | translate }}</b></td>  <td>{{project?.firstSprintStartAtString}}</td></tr>
-  <tr><td><b>{{ "project_info.sprint_cycle_length" | translate }}</b></td>    <td>{{project?.cycleString}}</td></tr>
-  <tr><td><b>{{ "project_info.description" | translate }}</b></td>            <td>{{project?.description}}</td></tr>
-  <tr><td><b>{{ "project_info.members" | translate }}</b></td>                <td><span *ngFor="let members of project?.members.items">{{members.member?.username}}</span></td></tr>
-</table> -->
-
+  <tr><td><b translate>project_info.project_id</b></td>             <td>{{nowPrjID}}</td></tr>
+  <tr><td><b translate>project_info.name</b></td>                   <td>{{project?.name}}</td></tr>
+  <tr><td><b translate>project_info.created_at</b></td>             <td>{{project?.createdAtString}}</td></tr>
+  <tr><td><b translate>project_info.first_sprint_start_at</b></td>  <td>{{project?.firstSprintStartAtString}}</td></tr>
+  <tr><td><b translate>project_info.sprint_cycle_length</b></td>    <td>{{project?.cycleString}}</td></tr>
+  <tr><td><b translate>project_info.description</b></td>            <td>{{project?.description}}</td></tr>
+  <tr><td><b translate>project_info.members</b></td>                <td><span *ngFor="let members of project?.members.items">{{members.member?.username}}</span></td></tr>
+</table>

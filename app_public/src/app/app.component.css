@@ -1,0 +1,36 @@
+
+:host {
+    --toolbarHeight: 56px;
+}
+
+mat-toolbar {
+    height: var(--toolbarHeight);
+    position: relative;
+    z-index: 100;
+}
+mat-toolbar a {
+    font-size: 16px;
+}
+mat-toolbar .title {
+    font-size: inherit;
+}
+.fill-remaining-space {
+    flex: 1 1 auto;
+}
+
+.authCard {
+    background-color: #909090;
+}
+
+mat-sidenav-container {
+    height: calc(100vh - var(--toolbarHeight));
+}
+mat-sidenav-content {
+    padding: 16px;
+}
+mat-nav-list {
+    padding-top: 0;
+}
+mat-sidenav {
+    width: 240px;
+}

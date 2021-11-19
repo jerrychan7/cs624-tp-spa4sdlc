@@ -1,0 +1,31 @@
+<mat-sidenav-container>
+  <!-- <mat-sidenav #sideNav mode="side" [opened]="!isPrjDB" class="mat-elevation-z4"> -->
+  <mat-sidenav #sideNav mode="side" [opened]="true" class="mat-elevation-z4">
+    <mat-nav-list><mat-accordion displayMode="flat" multi>
+      <a mat-list-item routerLink="/prj">{{ "sideNav.Project" | translate }}</a>
+      <mat-expansion-panel class="parametersPanel mat-elevation-z0">
+        <mat-expansion-panel-header><mat-panel-title><mat-icon>event_note</mat-icon>{{ "sideNav.product_backlog" | translate }}</mat-panel-title></mat-expansion-panel-header>
+        <!-- <mat-expansion-panel-header><mat-panel-title><mat-icon>event_note</mat-icon>{{"Home.title" | translate }}</mat-panel-title></mat-expansion-panel-header> -->
+        <div *ngIf="prds.length">
+          <!-- <a *ngFor="let prd of prds" mat-list-item routerLink="./prd/{{prd.id}}">{{prd.name}}</a> -->
+          <a *ngFor="let prd of prds" mat-list-item routerLink="./prd/{{prd.id}}">{{"product_board." + prd.id + ".name" | translate}}</a>
+        </div>
+        <a *ngIf="!prds.length" mat-list-item routerLink="./prd">Product Backlog</a>
+      </mat-expansion-panel>
+      <mat-expansion-panel class="parametersPanel mat-elevation-z0">
+        <mat-expansion-panel-header><mat-panel-title><mat-icon>directions_run</mat-icon>{{ "sideNav.sprint_backlog" | translate }}</mat-panel-title></mat-expansion-panel-header>
+        <div *ngIf="sprs.length">
+          <!-- <a *ngFor="let spr of sprs" mat-list-item routerLink="./spr/{{spr.id}}">{{spr.name}}</a> -->
+          <a *ngFor="let spr of sprs" mat-list-item routerLink="./spr/{{spr.id}}">{{"sprint_board." + spr.id + ".name" | translate}}</a>
+        </div>
+        <a *ngIf="!sprs.length" mat-list-item routerLink="./spr">Sprint Backlog</a>
+      </mat-expansion-panel>
+      <a mat-list-item routerLink="./spr/dashboard"><mat-icon>speed</mat-icon>{{ "sideNav.dashboard" | translate }}</a>
+      <mat-list-item (click)="onCreateBoard()" class="create-board-button"><mat-icon>add</mat-icon>{{ "sideNav.create_new_board" | translate }} </mat-list-item>
+    </mat-accordion></mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-loading-screen></app-loading-screen>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
