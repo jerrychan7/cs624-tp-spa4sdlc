@@ -1,0 +1,94 @@
+
+<div class="flip-wrapper" [@cardFlip]="cardFlipState">
+  <mat-card id="sign-in" class="mat-elevation-z8">
+    <mat-card-subtitle>
+      <button mat-button (click)="toggleFlip()">
+        {{"sign_in_or_up.sign_up" | translate}}
+        <mat-icon>arrow_forward_ios</mat-icon>
+      </button>
+    </mat-card-subtitle>
+    <mat-card-title translate>sign_in_or_up.sign_in</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="signInFormGroup">
+        <mat-form-field>
+          <mat-label translate>sign_in_or_up.username</mat-label>
+          <input matInput formControlName="username">
+          <mat-error *ngIf="signInFormGroup.hasError('required', 'username')"
+            [innerHTML]="'sign_in_or_up.error.username.required' | translate">
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>sign_in_or_up.password</mat-label>
+          <input matInput formControlName="password" [type]="passwordHide ? 'password' : 'text'" autocomplete="on">
+          <button mat-icon-button matSuffix (click)="passwordHide = !passwordHide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
+            <mat-icon>{{passwordHide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="signInFormGroup.hasError('required', 'password')"
+            [innerHTML]="'sign_in_or_up.error.password.required' | translate">
+          </mat-error>
+        </mat-form-field>
+      <button mat-stroked-button color="accent" type="submit" (click)="onSignIn()"
+        [disabled]="signInFormGroup.invalid">{{"sign_in_or_up.sign_in" | translate}}</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card id="sign-up" class="mat-elevation-z8">
+    <mat-card-subtitle>
+      <button mat-button (click)="toggleFlip()">
+        <mat-icon>arrow_back_ios</mat-icon>
+        {{"sign_in_or_up.sign_in" | translate}}
+      </button>
+    </mat-card-subtitle>
+    <mat-card-title translate>sign_in_or_up.sign_up</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="signUpFormGroup">
+        <mat-form-field>
+          <mat-label translate>sign_in_or_up.username</mat-label>
+          <input matInput formControlName="username">
+          <mat-error *ngIf="signUpFormGroup.hasError('required', 'username')"
+            [innerHTML]="'sign_in_or_up.error.username.required' | translate">
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>sign_in_or_up.password</mat-label>
+          <input matInput formControlName="password" [type]="passwordHide ? 'password' : 'text'" autocomplete="off">
+          <button mat-icon-button matSuffix (click)="passwordHide = !passwordHide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
+            <mat-icon>{{passwordHide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="signUpFormGroup.hasError('required', 'password')"
+            [innerHTML]="'sign_in_or_up.error.password.required' | translate">
+          </mat-error>
+          <mat-error *ngIf="signUpFormGroup.hasError('minlength', 'password')"
+            [innerHTML]="'sign_in_or_up.error.password.minlength' | translate">
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>sign_in_or_up.confirmPwd</mat-label>
+          <input matInput formControlName="confirmPwd" [type]="passwordHide ? 'password' : 'text'" autocomplete="off">
+          <button mat-icon-button matSuffix (click)="passwordHide = !passwordHide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
+            <mat-icon>{{passwordHide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="signUpFormGroup.hasError('required', 'confirmPwd')"
+            [innerHTML]="'sign_in_or_up.error.confirmPwd.required' | translate">
+          </mat-error>
+          <mat-error *ngIf="signUpFormGroup.hasError('mustMatch', 'confirmPwd')"
+            [innerHTML]="'sign_in_or_up.error.confirmPwd.mustMatch' | translate">
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>sign_in_or_up.email</mat-label>
+          <input type="email" matInput placeholder="Ex. pat@example.com" formControlName="email">
+          <mat-error *ngIf="signUpFormGroup.hasError('email', 'email')">
+            {{"sign_in_or_up.error.email.not_valid" | translate}}
+          </mat-error>
+          <mat-error *ngIf="signUpFormGroup.hasError('required', 'email')"
+            [innerHTML]="'sign_in_or_up.error.email.required' | translate">
+          </mat-error>
+        </mat-form-field>
+      <button mat-stroked-button color="accent" type="submit" (click)="onSignUp()"
+        [disabled]="signUpFormGroup.invalid">{{"sign_in_or_up.confirm" | translate}}</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
