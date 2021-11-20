@@ -18,10 +18,6 @@ mat-toolbar .title {
     flex: 1 1 auto;
 }
 
-.authCard {
-    background-color: #909090;
-}
-
 mat-sidenav-container {
     height: calc(100vh - var(--toolbarHeight));
 }
