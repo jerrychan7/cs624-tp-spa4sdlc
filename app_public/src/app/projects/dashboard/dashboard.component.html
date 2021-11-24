@@ -1,1 +1,35 @@
-<p>dashboard works!</p>
+<h1>{{ "project_dashboard.title" | translate }}</h1>
+<div class="no-project" *ngIf="!projects?.length">
+  <mat-icon aria-hidden="true">create_new_folder</mat-icon>
+  <h4>{{ "project_dashboard.no_prj1" | translate }}</h4>
+  <p>{{ "project_dashboard.no_prj2" | translate }}</p>
+  <button mat-flat-button color="primary" (click)="onCreateProject()">{{ "project_dashboard.create_prj_btn" | translate }}</button>
+</div>
+<div *ngIf="projects?.length" fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="10px" ngClass.gt-xs="ml-10">
+  <mat-card mat-ripple *ngFor="let project of projects" class="mat-elevation-z4"
+  fxFlex.sm="0 1 calc(50%-10px)" fxFlex.md="0 1 calc(33%-10px)" fxFlex.gt-md="0 1 calc(25%-10px)"
+  routerLink="../{{project.id}}">
+    <mat-card-header>
+      <mat-card-title>{{project.name}}</mat-card-title>
+      <mat-card-subtitle class="members">
+        <span *ngFor="let member of project.members">{{member.username}}</span>
+      </mat-card-subtitle>
+      <button mat-icon-button [matMenuTriggerFor]="menu"
+      (mousedown)="$event.stopPropagation();"
+      (click)="$event.stopPropagation();"
+      aria-label="Toggle menu" class="more-button">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="onModifyProject(project)">{{ "project_dashboard.setting" | translate }}</button>
+        <button mat-menu-item (click)="onRemoveProject(project)">{{ "project_dashboard.remove" | translate }}</button>
+      </mat-menu>
+    </mat-card-header>
+    <mat-card-content class="last-child">
+      <p>{{project.description}}</p>
+    </mat-card-content>
+  </mat-card>
+  <button mat-icon-button (click)="onCreateProject()">
+    <mat-icon>add_circle_outline</mat-icon>
+  </button>
+</div>

@@ -8,6 +8,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from "@angular/material/icon";
+import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { LoadingScreenComponent } from '../loading-screen/loading-screen.component';
 import { ProjectsComponent } from './projects.component';
@@ -16,6 +18,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PrjInfoComponent } from './prj-info/prj-info.component';
 import { ProductComponent } from './product/product.component';
 import { SprintComponent } from './sprint/sprint.component';
+import { ProjectCreateOrModifyComponent } from './dashboard/project-create-or-modify/project-create-or-modify.component';
 
 
 @NgModule({
@@ -27,6 +30,7 @@ import { SprintComponent } from './sprint/sprint.component';
     PrjInfoComponent,
     ProductComponent,
     SprintComponent,
+    ProjectCreateOrModifyComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +44,8 @@ import { SprintComponent } from './sprint/sprint.component';
     MatListModule,
     MatExpansionModule,
     MatIconModule,
+    MatCardModule,
+    MatMenuModule,
   ]
 })
 export class ProjectsModule { }
