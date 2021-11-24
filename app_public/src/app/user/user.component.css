@@ -41,3 +41,8 @@ tr b {
 td:not(:first-child) {
     padding-left: 20px;
 }
+
+.sign-out {
+    width: 100%;
+    text-align: center;
+}

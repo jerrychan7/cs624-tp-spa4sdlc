@@ -8,5 +8,9 @@
       <tr><td><b translate>user_info.email_verified</b></td> <td>{{nowUsr?.email_verified}}</td></tr>
     </table>
   </div>
-  <!-- <amplify-sign-out></amplify-sign-out> -->
+  <div class="sign-out">
+    <button mat-stroked-button (click)="onSignOutBtnClick()">
+      {{"user_info.sign_out" | translate}}
+    </button>
+  </div>
 </div>

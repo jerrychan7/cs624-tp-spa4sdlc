@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from './user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ export class AppComponent {
   title = 'spa4sdlc';
   constructor(
     public translate: TranslateService,
+    public usrSvr: UserService,
   ) {
     translate.setTranslation("en", {
       "topNav": {

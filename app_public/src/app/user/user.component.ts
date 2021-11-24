@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { User } from '../Types';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'app-user',
@@ -8,15 +11,16 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class UserComponent implements OnInit {
 
-  nowUsr: any = {
-    id: "132",
-    username: "asdf",
-    email: "email",
-    email_verified: true,
-  };
+  nowUsr: User | null = null;
+  set usrID(uid: string | null) {
+    if (!uid) return;
+    this.usrService.getUserByID(uid).then(usr => this.nowUsr = usr);
+  }
 
   constructor(
     public translate: TranslateService,
+    private usrService: UserService,
+    private route: ActivatedRoute,
   ) {
     translate.setTranslation("en", {
       "user_info": {
@@ -25,6 +29,7 @@ export class UserComponent implements OnInit {
         "username": "Username:",
         "email": "Email:",
         "email_verified": "Email verified:",
+        "sign_out": "Sign out",
       },
     }, true);
     translate.setTranslation("zh_cn", {
@@ -34,11 +39,18 @@ export class UserComponent implements OnInit {
         "username": "用户名：",
         "email": "邮箱：",
         "email_verified": "邮箱是否验证：",
+        "sign_out": "登出",
       },
     }, true);
   }
 
   ngOnInit(): void {
+    const routeParams = this.route.snapshot.paramMap;
+    this.usrID = routeParams.get('usrID');
+  }
+
+  onSignOutBtnClick() {
+    this.usrService.signOut();
   }
 
 }

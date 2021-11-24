@@ -22,8 +22,10 @@ import { SignOnOrSignUpComponent } from './sign-on-or-sign-up/sign-on-or-sign-up
   imports: [
     CommonModule,
     RouterModule.forChild([{
-      path: '', pathMatch: 'full', component: SignOnOrSignUpComponent,
+      path: "", redirectTo: "sign-in-or-sign-up", pathMatch: "full",
     }, {
+      path: "sign-in-or-sign-up", component: SignOnOrSignUpComponent,
+    },{
       path: ":usrID",
       component: UserComponent,
     }, ]),

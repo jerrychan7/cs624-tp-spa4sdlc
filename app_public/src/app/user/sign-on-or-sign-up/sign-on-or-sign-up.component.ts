@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-on-or-sign-up',
@@ -27,6 +28,7 @@ export class SignOnOrSignUpComponent implements OnInit {
     public translate: TranslateService,
     private formBuilder: FormBuilder,
     private usrService: UserService,
+    private router: Router,
   ) {
     translate.setTranslation("en", {
       "sign_in_or_up": {
@@ -128,13 +130,17 @@ export class SignOnOrSignUpComponent implements OnInit {
     this.signUpFormGroup.reset();
   }
 
-  onSignIn() {
+  async onSignIn() {
     const {username, password} = this.signInFormGroup.getRawValue();
-    console.log({username, password});
+    let loginFailed = await this.usrService.login(username, password);
+    console.log(loginFailed)
+    if (!loginFailed) {
+      this.router.navigateByUrl('/user/' + this.usrService.currentUserInfo()?.id);
+    }
   }
-  onSignUp() {
+  async onSignUp() {
     const {username, password, email} = this.signUpFormGroup.getRawValue();
-    console.log({username, password, email});
+    await this.usrService.registerUser(username, password, email);
   }
 
 

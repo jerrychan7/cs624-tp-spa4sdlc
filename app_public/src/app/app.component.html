@@ -10,8 +10,7 @@
   <a mat-button href="/" class="title"><span>SPA4Scrum<sub style="font-size: 50%; line-height: 100%;">EDU</sub></span></a>
   <a mat-button href="https://www.scrumguides.org/index.html">{{"topNav.official_guide" | translate}}</a>
   <span class="fill-remaining-space"></span>
-  <!-- <span>{{authState === 'signedin' && user? user.username: "You can use the system after logging in."}}</span> -->
-  <span>You can use the system after logging in.</span>
+  <span>{{usrSvr.currentUserInfo()?.username || "You can use the system after logging in."}}</span>
   <button mat-icon-button aria-label="translate" [matMenuTriggerFor]="LangsList">
     <mat-icon>translate</mat-icon>
   </button>
@@ -21,7 +20,7 @@
   <!-- <button mat-icon-button aria-label="message">
     <mat-icon>message</mat-icon>
   </button> -->
-  <button mat-icon-button routerLink="/user" aria-label="user avatar">
+  <button mat-icon-button [routerLink]="['/user', usrSvr.currentUserInfo()?.id]" aria-label="user avatar">
     <mat-icon>account_circle</mat-icon>
   </button>
 </mat-toolbar>
