@@ -35,7 +35,7 @@ export class CreateOrModifyProjectsService {
         description: prj.description,
         firstSprintStartAt: prj.firstSprintStartAt,
         cycle: cycd + " : " + cych,
-        membersEmail: prj.members?.map(ms => ms.email),
+        membersEmail: prj.members?.map((ms: any) => ms.email),
       });
     }
   }

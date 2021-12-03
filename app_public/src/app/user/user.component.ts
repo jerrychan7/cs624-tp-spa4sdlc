@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { User } from '../Types';
 import { UserService } from './user.service';
@@ -14,13 +14,15 @@ export class UserComponent implements OnInit {
   nowUsr: User | null = null;
   set usrID(uid: string | null) {
     if (!uid) return;
+    this.usrService.asyncCurrentUserInfo();
     this.usrService.getUserByID(uid).then(usr => this.nowUsr = usr);
   }
 
   constructor(
     public translate: TranslateService,
-    private usrService: UserService,
+    public usrService: UserService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {
     translate.setTranslation("en", {
       "user_info": {
@@ -51,6 +53,7 @@ export class UserComponent implements OnInit {
 
   onSignOutBtnClick() {
     this.usrService.signOut();
+    this.router.navigateByUrl('/user/sign-in-or-sign-up');
   }
 
 }

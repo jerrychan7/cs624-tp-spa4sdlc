@@ -1,1 +1,57 @@
-<p>sprint works!</p>
+<p><a href="/prj/{{nowPrjID}}">{{nowPrj?.name}}</a> > {{ "sprint_board.breadcrumb_nav" | translate }} > <a href="./">{{"sprint_board." + nowSpr?.id + ".name" | translate}}</a></p>
+<h1>{{"sprint_board." + nowSpr?.id + ".name" | translate}} <button mat-icon-button (click)="onEditBoard(nowSpr)"><mat-icon>edit</mat-icon></button></h1>
+<p>{{"sprint_board." + nowSpr?.id + ".description" | translate}}</p>
+<mat-grid-list cols="3" rowHeight="100%" gutterSize="10" cdkDropListGroup>
+  <mat-grid-tile *ngFor="let lane of swimlane; let i = index">
+    <mat-card class="grid-tile mat-elevation-z2">
+      <mat-card-title>{{lane.title}}</mat-card-title>
+      <div class="droplist" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="lane.id">
+        <mat-card *ngFor="let usrStory of lane.usrStorys" class="dragbox mat-elevation-z5" cdkDrag>
+          <div class="drag-placeholder" *cdkDragPlaceholder></div>
+          <mat-card-header>
+            <mat-card-title *ngIf="usrStory.title">{{usrStory.title}}</mat-card-title>
+            <mat-card-subtitle *ngIf="usrStory.subTitle">{{usrStory.subTitle}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{usrStory.content || "&nbsp;"}}</p>
+            <div class="progress">
+              
+              <!-- <mat-progress-bar
+                mode="{{usrStory.status != 'doing'? 'determinate': 'buffer'}}"
+                value="{{(usrStory.currentDuration || 0) / (usrStory.totalTime || 0) * 100}}"
+                ></mat-progress-bar> -->
+              <mat-progress-bar mode="determinate" value="0"></mat-progress-bar>
+              <span *ngIf="usrStory.totalTime">{{usrStory.currentDurationString}} / {{usrStory.totalTimeString}}</span>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button class="mat-elevation-z2" color="primary"
+              *ngIf="usrStory.status != 'doing'" (click)="onStart(usrStory)">start</button>
+            <button mat-raised-button class="mat-elevation-z2" color="accent"
+              *ngIf="usrStory.status == 'doing'" (click)="onStop(usrStory)">stop</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      <mat-card-actions *ngIf="i == 0">
+        <button mat-icon-button (click)="onShowList(lane)">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<div class="list" *ngIf="showList">
+  <mat-selection-list #list>
+    <mat-list-item>
+      <button mat-icon-button (click)="onCloseList()"><mat-icon>close</mat-icon></button>
+      <button mat-raised-button color="primary" (click)="addSelectedUsrStorys(list.selectedOptions.selected)">add</button>
+    </mat-list-item>
+    <mat-list-option *ngFor="let usrStory of otherUsrStorys" [value]="usrStory">
+      <h3 matLine *ngIf="usrStory.title">{{usrStory.title}}</h3>
+      <p matLine *ngIf="usrStory.subTitle">{{usrStory.subTitle}}></p>
+      <p matLine>{{usrStory.content || "&nbsp;"}}</p>
+      <p matLine *ngIf="usrStory.totalTime">Estimated time to spend: {{usrStory.totalTimeString}}</p>
+    </mat-list-option>
+  </mat-selection-list>
+</div>

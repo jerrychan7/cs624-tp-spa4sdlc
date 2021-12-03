@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { Project } from 'src/app/Types';
+import { ProjectsService } from "../projects.service";
 
 @Component({
   selector: 'app-prj-info',
@@ -8,22 +11,16 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class PrjInfoComponent implements OnInit {
 
-  project: any = {
-    name: "name",
-    createdAtString: "createdAtString",
-    firstSprintStartAtString: "firstSprintStartAtString",
-    cycleString: "cycleString",
-    description: "description",
-    members: [],
-  };
+  project: Project | any = null;
 
   get nowPrjID() {
-    // return this.route.parent.snapshot.paramMap.get('prjID');
-    return "prj id";
+    return this.route.parent?.snapshot.paramMap.get('prjID');
   }
 
   constructor(
+    private route: ActivatedRoute,
     public translate: TranslateService,
+    private prjsService: ProjectsService,
   ) {
     translate.setTranslation("en", {
       "project_info": {
@@ -53,7 +50,14 @@ export class PrjInfoComponent implements OnInit {
     }, true);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.project = await this.prjsService.getProjectById(this.nowPrjID || "");
+    if (!this.project) return;
+    const cycd = Math.floor(this.project.cycle / 60 / 60 / 24),
+          cych = Math.floor(this.project.cycle / 60 / 60) - cycd * 24;
+    this.project.cycleString = (cycd? cycd + " day" + (cycd > 1? "s": ""): "") + (cych? cych + " hour" + (cych > 1? "s": ""): "");
+    this.project.firstSprintStartAtString = (new Date(this.project.firstSprintStartAt)).toDateString();
+    this.project.createdAtString = (new Date(this.project.createdAt)).toDateString();
   }
 
 }

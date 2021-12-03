@@ -1,4 +1,4 @@
-<!-- <mat-toolbar>
+<mat-toolbar>
   <button mat-stroked-button (click)="onClose()"><mat-icon>clear</mat-icon></button>
   <span>{{ "add_or_edit_board.title." + (data.board?.id? "modify": "new") | translate }}</span>
 </mat-toolbar>
@@ -37,7 +37,7 @@
         </mat-form-field>
         <mat-form-field *ngIf="formArrayLangs.controls.length">
           <mat-label>{{ "add_or_edit_board.language_used_above" | translate }}</mat-label>
-          <input matInput formControlName="lang" [matAutocomplete]="auto" aria-label="{{ 'add_or_edit_board.language_used_above' | translate }}" />
+          <input matInput formControlName="lang" [matAutocomplete]="auto" attr.aria-label="{{ 'add_or_edit_board.language_used_above' | translate }}" />
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
               <mat-option *ngFor="let option of filteredOptions[0] | async" [value]="option">
                 {{option}}
@@ -64,7 +64,7 @@
               <mat-label>{{ "add_or_edit_board.board_description" | translate }}</mat-label>
               <textarea matInput formControlName="description"></textarea>
             </mat-form-field>
-            <my-form-sub-component [secondFormGroup]="secondFormGroup.controls.langs.controls[i]"></my-form-sub-component>
+            <!-- <my-form-sub-component [secondFormGroup]="secondFormGroup.controls.langs.controls[i]"></my-form-sub-component> -->
           </div>
         </div>
         <button mat-button (click)="onAddLang()"><mat-icon>add</mat-icon>{{ "add_or_edit_board.add_new_language_btn" | translate }}</button>
@@ -80,4 +80,4 @@
       <p>{{ "add_or_edit_board.done_text" | translate }}</p>
     </div>
   </mat-step>
-</mat-horizontal-stepper> -->
+</mat-horizontal-stepper>

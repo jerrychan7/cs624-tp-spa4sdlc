@@ -12,7 +12,7 @@ export class UserService {
   }
 
   private currentUser: User | null = null;
-  currentUserInfo() { console.log(this.currentUser); return this.currentUser; }
+  currentUserInfo() { return this.currentUser; }
 
   async getAllUsers(): Promise<User[]> {
     // Simulate network delay.
@@ -23,7 +23,6 @@ export class UserService {
   async asyncCurrentUserInfo(): Promise<User | null> {
     if (this.currentUser) return this.currentUser;
     let uid = localStorage.getItem("userID");
-    console.log(uid, this.currentUser);
     if (uid) {
       return this.currentUser = await this.getUserByID(uid);
     }

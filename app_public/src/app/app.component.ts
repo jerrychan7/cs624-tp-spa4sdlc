@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './user/user.service';
 
@@ -9,18 +10,25 @@ import { UserService } from './user/user.service';
 })
 export class AppComponent {
   title = 'spa4sdlc';
+  get isPrj() { return this.location.path().startsWith("/prj"); }
+  get isPrjDB() { return this.location.path() == "/prj/dashboard"; }
+  get isUsr() { return this.location.path().startsWith("/user"); }
+
   constructor(
     public translate: TranslateService,
     public usrSvr: UserService,
+    public location: Location,
   ) {
     translate.setTranslation("en", {
       "topNav": {
         "official_guide": "Official Guide",
+        "use_after_login": "You can use the system after logging in.",
       }
     }, true);
     translate.setTranslation("zh_cn", {
       "topNav": {
         "official_guide": "官方指南",
+        "use_after_login": "请在登录后使用本系统。",
       }
     }, true);
   }

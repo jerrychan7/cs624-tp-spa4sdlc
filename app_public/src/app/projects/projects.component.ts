@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
@@ -12,11 +13,15 @@ import { AddOrEditBoardComponent } from './add-or-edit-board/add-or-edit-board.c
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
+  get isPrjDB(): boolean {
+    return this.location.path() == "/prj/dashboard";
+  };
 
   @ViewChild("sideNav")
   public sideNav!: MatDrawer;
 
   constructor(
+    private location: Location,
     private dialog: MatDialog,
     public translate: TranslateService,
     private prjsService: ProjectsService,
@@ -24,7 +29,7 @@ export class ProjectsComponent implements OnInit {
   ) {
     translate.setTranslation("en", {
       "sideNav": {
-        "Project": "Project",
+        "projects": "Projects",
         "product_backlog": "Product Backlog",
         "sprint_backlog": "Sprint Backlog",
         "dashboard": "Dashboard",
@@ -33,7 +38,7 @@ export class ProjectsComponent implements OnInit {
     }, true);
     translate.setTranslation("zh_cn", {
       "sideNav": {
-        "Project": "项目列表",
+        "projects": "项目列表",
         "product_backlog": "产品待办列表",
         "sprint_backlog": "Sprint 待办列表",
         "dashboard": "仪表盘",

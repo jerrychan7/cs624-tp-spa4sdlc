@@ -6,7 +6,7 @@ import { PrjInfoComponent } from "./prj-info/prj-info.component";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ProductComponent } from './product/product.component';
 import { SprintComponent } from './sprint/sprint.component';
-// import { DashboardComponent as SprintDashboardComponent } from "./sprint/dashboard/dashboard.component";
+import { DashboardComponent as SprintDashboardComponent } from "./sprint/dashboard/dashboard.component";
 
 // https://ultimatecourses.com/blog/angular-parent-routing-params
 const routes: Routes = [{
@@ -32,11 +32,11 @@ const routes: Routes = [{
       children: [
         { path: "", children: [
           { path: "", component: SprintComponent, },
-          // { path: "dashboard", component: SprintDashboardComponent, },
+          { path: "dashboard", component: SprintDashboardComponent, },
         ]},
         { path: ":sprID", children: [
           { path: "", component: SprintComponent, },
-          // { path: "dashboard", component: SprintDashboardComponent, },
+          { path: "dashboard", component: SprintDashboardComponent, },
         ]},
       ]
     },

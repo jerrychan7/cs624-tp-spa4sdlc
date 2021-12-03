@@ -49,7 +49,6 @@ export class ProjectsService {
   private initBoard(board: Board & {
     createdTime: Date,
     updatedTime: Date,
-    langs: Object,
   } | any) {
     board.createdTime = getDateFromMilliseconds(board.createdAt);
     board.updatedTime = getDateFromMilliseconds(board.updatedAt);
@@ -87,25 +86,30 @@ export class ProjectsService {
     return board;
   }
 
+  private rt(value: any) {
+    this.loadingScreen.stopLoading();
+    return value;
+  }
+
   private async getAllProjects(): Promise<Project[]> {
     // Simulate network delay.
     await new Promise(s => setTimeout(s, 500));
     return PROJECTS;
   }
-  async getAllProjectsByCurrentUser() {
+  async getAllProjectsByCurrentUser(): Promise<Project[] | null> {
     this.loadingScreen.startLoading();
     // Simulate network delay.
     await new Promise(s => setTimeout(s, 500));
     const uinfo = await this.usrService.asyncCurrentUserInfo();
     if (uinfo === null) {
       console.error("connot get user info");
-      this.loadingScreen.stopLoading();
-      return null;
+      return this.rt(null);
     }
-    if (uinfo.id === this.currentUsr?.id) return this.currentPrjs;
+    if (uinfo.id === this.currentUsr?.id) return this.rt(this.currentPrjs);
+    const prjs = await this.getAllProjects();
+    uinfo.projects = prjs.filter(prj => prj.members?.find(uid => uid == uinfo.id));
     this.currentUsr = uinfo;
-    this.loadingScreen.stopLoading();
-    return this.currentPrjs;
+    return this.rt(this.currentPrjs);
   }
 
   async getProjectById(projectId: string) {
@@ -116,20 +120,16 @@ export class ProjectsService {
   private async getBoardsByProjectId(prjID: string) {
     return this.currentPrj?.boards;
   }
-  async getAllBoardByCurrentPrj() {
+  async getAllBoardByCurrentPrj(): Promise<Board[] | null | undefined> {
     if (!this.currentPrj) {
       console.warn("need set currentPrj or call getProjectById before call getAllBoardByCurrentPrj");
       return null;
     }
     this.loadingScreen.startLoading();
     if (!this.currentPrjs) await this.getAllProjectsByCurrentUser();
-    if (this.currentPrj.boards) {
-      this.loadingScreen.stopLoading();
-      return this.currentPrj.boards;
-    }
+    if (this.currentPrj.boards) return this.rt(this.currentPrj.boards);
     const boards = await this.getBoardsByProjectId(this.currentPrj.id);
     boards?.forEach(this.initBoard);
-    this.loadingScreen.stopLoading();
-    return this.currentPrj.boards = boards;
+    return this.rt(this.currentPrj.boards = boards);
   }
 }

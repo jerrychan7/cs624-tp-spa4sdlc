@@ -8,7 +8,7 @@
       <tr><td><b translate>user_info.email_verified</b></td> <td>{{nowUsr?.email_verified}}</td></tr>
     </table>
   </div>
-  <div class="sign-out">
+  <div class="sign-out" *ngIf="nowUsr && nowUsr == usrService.currentUserInfo()">
     <button mat-stroked-button (click)="onSignOutBtnClick()">
       {{"user_info.sign_out" | translate}}
     </button>

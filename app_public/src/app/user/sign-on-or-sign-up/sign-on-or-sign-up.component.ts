@@ -133,7 +133,6 @@ export class SignOnOrSignUpComponent implements OnInit {
   async onSignIn() {
     const {username, password} = this.signInFormGroup.getRawValue();
     let loginFailed = await this.usrService.login(username, password);
-    console.log(loginFailed)
     if (!loginFailed) {
       this.router.navigateByUrl('/user/' + this.usrService.currentUserInfo()?.id);
     }

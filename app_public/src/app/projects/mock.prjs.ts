@@ -8,7 +8,7 @@ export const PROJECTS: Project[] = [{
   firstSprintStartAt: "",
   cycle: 100 * 60 * 1000,
   description: "description for project 1",
-  members: [],
+  members: ["user id 1"],
 }, {
   id: "project id 2",
   name: "project name 2",

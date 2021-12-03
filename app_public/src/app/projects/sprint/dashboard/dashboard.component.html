@@ -1,0 +1,42 @@
+<p><a href="/prj/{{nowPrjID}}">{{nowPrj?.name}}</a> > <a href="/prj/{{nowPrjID}}/spr">{{ "sprint_dashboard.breadcrumb_nav.sprint_backlog" | translate }}</a> > <a hrer="./">{{ "sprint_dashboard.breadcrumb_nav.dashboard" | translate }}</a></p>
+<div class="grid-container">
+  <h1 class="mat-h1">{{ "sprint_dashboard.sprint_dashboard_title" | translate }}</h1>
+  <mat-grid-list cols="2" rowHeight="350px">
+    <!-- <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows"> -->
+    <mat-grid-tile *ngFor="let card of cards" [colspan]="card.cols" [rowspan]="card.rows">
+      <mat-card class="dashboard-card mat-elevation-z2">
+        <mat-card-header>
+          <mat-card-title>
+            {{card.title}}
+            <button mat-icon-button (click)="showHelper(card)" class="more-button" aria-label="helper">
+              <mat-icon>help_outline</mat-icon>
+            </button>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <div *ngIf="card.content"><div *ngFor="let reports of daysreports; let i = index">
+            <h3>Day {{i + 1}}</h3>
+            <mat-card class="mat-elevation-z4" *ngFor="let report of reports">
+              <mat-card-header>
+                <mat-card-title *ngIf="report.title">{{report.title}}</mat-card-title>
+                <mat-card-subtitle>{{report.username}}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>{{report.content}}</mat-card-content>
+            </mat-card>
+          </div></div>
+          <div *ngIf="card.options" class="chart" echarts [options]="options"></div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+<div class="helper" *ngIf="showBurndownHelper" (click)="onCloseHelper()">
+  <mat-card class="mat-elevation-z20">
+    {{ "sprint_dashboard.burndown_helper" | translate }}
+  </mat-card>
+</div>
+<div class="helper" *ngIf="showDailyReportHelper" (click)="onCloseHelper()">
+  <mat-card class="mat-elevation-z20" [innerHTML]=" 'sprint_dashboard.daily_report_helper' | translate ">
+  </mat-card>
+</div>

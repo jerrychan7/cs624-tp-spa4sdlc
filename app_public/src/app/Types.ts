@@ -44,6 +44,7 @@ export interface Board extends Record {
   projectId: ID,
   project?: Project,
   cards?: Card[],
+  langs?: any,
 };
 
 export interface User extends Record {
@@ -60,7 +61,7 @@ export interface Project extends Record {
   firstSprintStartAt: DateTime,
   cycle: Timestamp,
   description?: string,
-  members?: User[],
+  members?: Array<User | ID | any>,
   boards?: Board[],
 };
 
