@@ -6,9 +6,9 @@ import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-sign-on-or-sign-up',
-  templateUrl: './sign-on-or-sign-up.component.html',
-  styleUrls: ['./sign-on-or-sign-up.component.css'],
+  selector: 'app-sign-in-or-sign-up',
+  templateUrl: './sign-in-or-sign-up.component.html',
+  styleUrls: ['./sign-in-or-sign-up.component.css'],
   animations: [
     trigger('cardFlip', [
       state('signIn', style({
@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
     ])
   ]
 })
-export class SignOnOrSignUpComponent implements OnInit {
+export class SignInOrSignUpComponent implements OnInit {
 
   constructor(
     public translate: TranslateService,

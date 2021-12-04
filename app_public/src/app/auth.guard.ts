@@ -17,7 +17,7 @@ export class LoginGuard implements CanActivate {
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.usrService.asyncCurrentUserInfo().then(usr => {
       if (!usr) {
-        this.router.navigateByUrl('/user/sign-in-or-sign-up');
+        this.router.navigateByUrl('/usr/sign-in-or-sign-up');
         return false;
       }
       return true;

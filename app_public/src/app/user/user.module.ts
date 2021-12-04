@@ -11,20 +11,20 @@ import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/mat
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UserComponent } from "./user.component";
-import { SignOnOrSignUpComponent } from './sign-on-or-sign-up/sign-on-or-sign-up.component';
+import { SignInOrSignUpComponent } from './sign-in-or-sign-up/sign-in-or-sign-up.component';
 
 
 @NgModule({
   declarations: [
     UserComponent,
-    SignOnOrSignUpComponent,
+    SignInOrSignUpComponent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild([{
       path: "", redirectTo: "sign-in-or-sign-up", pathMatch: "full",
     }, {
-      path: "sign-in-or-sign-up", component: SignOnOrSignUpComponent,
+      path: "sign-in-or-sign-up", component: SignInOrSignUpComponent,
     },{
       path: ":usrID",
       component: UserComponent,

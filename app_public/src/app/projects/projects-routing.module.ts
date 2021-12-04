@@ -22,23 +22,22 @@ const routes: Routes = [{
   children: [
     { path: "", redirectTo: "info", pathMatch: "full", },
     { path: "info", component: PrjInfoComponent, },
-    { path: "prd", component: ProductComponent, },
     { path: "prd/:prdID", component: ProductComponent, },
-    // { path: "spr", component: SprintComponent, },
-    // { path: "spr/:sprID", component: SprintComponent, },
-    // { path: "spr/dashboard", component: SprintDashboardComponent },
-    // { path: "spr/:sprID/dashboard", component: SprintDashboardComponent },
     { path: "spr",
-      children: [
-        { path: "", children: [
+      children: [{
+        path: ":sprID", children: [
           { path: "", component: SprintComponent, },
           { path: "dashboard", component: SprintDashboardComponent, },
-        ]},
-        { path: ":sprID", children: [
+        ],
+      }, ],
+    }, {
+      path: "archive",
+      children: [{
+        path: ":sprID", children: [
           { path: "", component: SprintComponent, },
           { path: "dashboard", component: SprintDashboardComponent, },
-        ]},
-      ]
+        ],
+      }, ],
     },
   ],
 }, ];

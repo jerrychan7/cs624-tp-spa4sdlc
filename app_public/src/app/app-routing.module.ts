@@ -9,7 +9,7 @@ const routes: Routes = [{
   loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule),
   canActivate: [LoginGuard],
 }, {
-  path: "user",
+  path: "usr",
   loadChildren: () => import('./user/user.module').then(m => m.UserModule),
 }, ];
 

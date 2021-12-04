@@ -12,7 +12,7 @@ export class AppComponent {
   title = 'spa4sdlc';
   get isPrj() { return this.location.path().startsWith("/prj"); }
   get isPrjDB() { return this.location.path() == "/prj/dashboard"; }
-  get isUsr() { return this.location.path().startsWith("/user"); }
+  get isUsr() { return this.location.path().startsWith("/usr"); }
 
   constructor(
     public translate: TranslateService,
