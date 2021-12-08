@@ -2,13 +2,14 @@
   <button mat-icon-button (click)="subcomponentRef?.sideNav?.toggle()" *ngIf="isPrj && !isPrjDB">
     <mat-icon>menu</mat-icon>
   </button>
-  <button mat-icon-button (click)="location.back();" *ngIf="isUsr">
+  <button mat-icon-button (click)="onBackBtnClick()" *ngIf="isUsr">
     <mat-icon>arrow_back_ios</mat-icon>
   </button>
   <a mat-button href="/" class="title"><span>SPA4Scrum<sub style="font-size: 50%; line-height: 100%;">EDU</sub></span></a>
   <a mat-button href="https://www.scrumguides.org/index.html">{{"topNav.official_guide" | translate}}</a>
   <span class="fill-remaining-space"></span>
-  <span>{{usrSvr.currentUserInfo()?.username || ("topNav.use_after_login" | translate)}}</span>
+  <!-- <span>{{usrSvr.currentUserInfo()?.username || ("topNav.use_after_login" | translate)}}</span> -->
+  <span>{{usrSvr.getCurrentUser()?.username || ("topNav.use_after_login" | translate)}}</span>
   <button mat-icon-button aria-label="translate" [matMenuTriggerFor]="LangsList">
     <mat-icon>translate</mat-icon>
   </button>
@@ -18,7 +19,8 @@
   <!-- <button mat-icon-button aria-label="message">
     <mat-icon>message</mat-icon>
   </button> -->
-  <button mat-icon-button [routerLink]="['/usr', usrSvr.currentUserInfo()?.id]" aria-label="user avatar">
+  <!-- <button mat-icon-button [routerLink]="['/usr', usrSvr.currentUserInfo()?._id]" aria-label="user avatar"> -->
+  <button mat-icon-button [routerLink]="['/usr', usrSvr.getCurrentUser()?._id]" aria-label="user avatar">
     <mat-icon>account_circle</mat-icon>
   </button>
 </mat-toolbar>

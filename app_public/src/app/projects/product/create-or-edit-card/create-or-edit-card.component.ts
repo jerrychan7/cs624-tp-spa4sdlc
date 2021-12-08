@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 // import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UserStoryService } from "../user-story.service";
 import { TranslateService } from '@ngx-translate/core';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-create-or-edit-card',
@@ -13,16 +14,33 @@ import { TranslateService } from '@ngx-translate/core';
 export class CreateOrEditCardComponent implements OnInit {
 
   snackBarRef: any;
+  currentCardFrom = this.formBuilder.group({
+    _id: [null],
+    boardId: [null],
+    title: ["", Validators.required],
+    subTitle: [""],
+    content: [""],
+    totalTime: [""],
+  });
 
-  get isModify() {
-    return this.usService.currentCardFrom.controls["id"].value;
+  get isModify() { return !!this.currentCardFrom.controls["_id"].value; }
+  get currentCard() { return this.data; }
+  get isEdited() {
+    const oldCard = this.currentCard, nowCard = this.currentCardFrom.value;
+    const [th, tm] = nowCard.totalTime.split(":").map((s: any) => Number(s) || 0),
+          totalTime = ((th || 0) * 60 + (tm || 0)) * 60;
+    if (oldCard.totalTime && oldCard.totalTime != totalTime) return true;
+    return "title,subTitle,content"
+      .split(",").some(p => oldCard[p] != nowCard[p]);
   }
 
   constructor(
     private snackBar: MatSnackBar,
-    public usService: UserStoryService,
-    public dialogRef: MatDialogRef<CreateOrEditCardComponent>,
+    private formBuilder: FormBuilder,
     public translate: TranslateService,
+    public usService: UserStoryService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<CreateOrEditCardComponent>,
   ) {
     translate.setTranslation("en", {
       "create_or_edit_card": {
@@ -60,19 +78,37 @@ export class CreateOrEditCardComponent implements OnInit {
     }, true);
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.populateForm();
+  }
+
+  populateForm(card: any = this.currentCard) {
+    this.currentCardFrom.reset();
+    let totalTime = card.totalTime || 0,
+        th = Math.floor(totalTime / 60 / 60),
+        tm = Math.floor(totalTime / 60) - th * 60;
+    this.currentCardFrom.setValue({
+      _id: card._id || null,
+      boardId: card.boardId || null,
+      title: card.title || "",
+      subTitle: card.subTitle || "",
+      content: card.content || "",
+      totalTime: (totalTime? th + " : " + tm: ""),
+    });
+  }
 
   async onCreateOrModify() {
-    let err = await this.usService.createOrModifyCard();
-    if (!err) {
-      this.usService.initializeFormGroup();
-      this.onClose();
-    }
+    if (!this.isEdited) this.onClose();
+    const card = this.currentCardFrom.value;
+    let err = await (this.isModify? this.usService.modifyCard(card): this.usService.insertCard(card));
+    // console.log(err);
+    if (typeof err !== "string") this.onClose();
     else
       this.snackBarRef = this.snackBar.open(err, "OK");
   }
 
   onClose() {
+    this.populateForm({});
     this.snackBarRef?.closeWithAction();
     this.dialogRef.close();
   }

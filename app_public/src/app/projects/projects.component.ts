@@ -6,6 +6,8 @@ import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { TranslateService } from '@ngx-translate/core';
 import { ProjectsService } from './projects.service';
 import { AddOrEditBoardComponent } from './add-or-edit-board/add-or-edit-board.component';
+import { Board, BoardCategory } from '../Types';
+import { BoardsService } from './add-or-edit-board/boards.service';
 
 @Component({
   selector: 'app-projects',
@@ -16,6 +18,9 @@ export class ProjectsComponent implements OnInit {
   get isPrjDB(): boolean {
     return this.location.path() == "/prj/dashboard";
   };
+  get prds() { return this.boardService.prds; }
+  get sprs() { return this.boardService.sprs; }
+  get archive() { return this.boardService.archive; }
 
   @ViewChild("sideNav")
   public sideNav!: MatDrawer;
@@ -24,6 +29,7 @@ export class ProjectsComponent implements OnInit {
     private location: Location,
     private dialog: MatDialog,
     public translate: TranslateService,
+    private boardService: BoardsService,
     private prjsService: ProjectsService,
     private router: Router,
   ) {
@@ -32,7 +38,7 @@ export class ProjectsComponent implements OnInit {
         "projects": "Projects",
         "product_backlog": "Product Backlog",
         "sprint_backlog": "Sprint Backlog",
-        "dashboard": "Dashboard",
+        "archive": "Archived",
         "create_new_board": "Create new board",
       }
     }, true);
@@ -41,40 +47,15 @@ export class ProjectsComponent implements OnInit {
         "projects": "项目列表",
         "product_backlog": "产品待办列表",
         "sprint_backlog": "Sprint 待办列表",
-        "dashboard": "仪表盘",
+        "archive": "归档",
         "create_new_board": "创建新板块",
       }
     }, true);
   }
 
-  prds: Array<any> = [];
-  sprs: Array<any> = [];
+  ngOnInit(): void {}
 
-  async initBoard() {
-    let boards = await this.prjsService.getAllBoardByCurrentPrj();
-    if (!boards) return;
-    this.sprs = []; this.prds = [];
-    boards.forEach(board => {
-      switch(board.category) {
-      case "Product":
-        this.prds.push(board);
-        break;
-      case "Sprint":
-        this.sprs.push(board);
-        break;
-      }
-    });
-    this.sprs.sort((a, b) => a.createdTime - b.createdTime);
-    this.prds.sort((a, b) => a.createdTime - b.createdTime);
-  }
-
-  ngOnInit(): void {
-    this.prjsService.onProjectChange(async (prj: any) => {
-      if (!prj) return;
-      await this.initBoard();
-    });
-    // TODO: OnDeleteBoardListener
-  }
+  ngOnDestroy() {}
 
   onCreateBoard() {
     const dialogConfig = new MatDialogConfig();
@@ -85,11 +66,10 @@ export class ProjectsComponent implements OnInit {
     const dialogRef = this.dialog.open(AddOrEditBoardComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(async board => {
       if (!board) return;
-      await this.initBoard();
       this.router.navigateByUrl(`/prj/${
-        this.prjsService.currentPrj?.id || ""}/${
-          board.category === "Product"? "prd": "spr"}/${
-            board.id}`);
+        this.prjsService.currentPrj?._id || ""}/${
+          board.category === BoardCategory.PRODUCT? "prd": "spr"}/${
+            board._id}`);
     });
   }
 }

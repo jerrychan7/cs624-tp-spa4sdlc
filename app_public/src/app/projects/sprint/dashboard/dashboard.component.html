@@ -1,4 +1,9 @@
-<p><a href="/prj/{{nowPrjID}}">{{nowPrj?.name}}</a> > <a href="/prj/{{nowPrjID}}/spr">{{ "sprint_dashboard.breadcrumb_nav.sprint_backlog" | translate }}</a> > <a hrer="./">{{ "sprint_dashboard.breadcrumb_nav.dashboard" | translate }}</a></p>
+<p>
+  <a href="/prj/{{nowPrjID}}">{{nowPrj?.name}}</a> >
+  {{ "sprint_board.breadcrumb_nav" | translate }} >
+  <a href="/prj/{{nowPrjID}}/spr/{{nowSprID}}">{{"sprint_board." + nowSprID + ".name" | translate}}</a> >
+  <a hrer="./">{{ "sprint_dashboard.breadcrumb_nav.dashboard" | translate }}</a>
+</p>
 <div class="grid-container">
   <h1 class="mat-h1">{{ "sprint_dashboard.sprint_dashboard_title" | translate }}</h1>
   <mat-grid-list cols="2" rowHeight="350px">

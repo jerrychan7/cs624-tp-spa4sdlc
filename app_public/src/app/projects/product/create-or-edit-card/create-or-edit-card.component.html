@@ -1,1 +1,27 @@
-<p>create-or-edit-card works!</p>
+<mat-toolbar>
+  <span>{{ "create_or_edit_card.title." + (isModify? "modify": "create") | translate }}</span>
+  <span class="fill-remaining-space"></span>
+  <button mat-stroked-button (click)="onClose()"><mat-icon>clear</mat-icon></button>
+</mat-toolbar>
+<form [formGroup]="currentCardFrom" class="normal-form">
+  <input type="hidden" formControlName="_id" />
+  <input type="hidden" formControlName="boardId" />
+  <mat-form-field>
+    <mat-label>{{ "create_or_edit_card.card_title" | translate }}</mat-label>
+    <input matInput formControlName="title" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{ "create_or_edit_card.card_subtitle" | translate }}</mat-label>
+    <input matInput formControlName="subTitle" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{ "create_or_edit_card.content" | translate }}</mat-label>
+    <input matInput formControlName="content" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{ "create_or_edit_card.estimated_time_2_spend" | translate }}</mat-label>
+    <input matInput formControlName="totalTime" placeholder="{{ 'create_or_edit_card.estimated_time_2_spend_placeholder' | translate }}"/>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" (click)="onCreateOrModify()"
+    [disabled]="!isEdited || currentCardFrom.invalid">{{ "create_or_edit_card.submit_btn." + (isModify? "confirm": "create") | translate }}</button>
+</form>

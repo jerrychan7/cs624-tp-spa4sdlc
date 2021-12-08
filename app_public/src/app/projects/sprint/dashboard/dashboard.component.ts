@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
     return null;
   }
   get nowPrjID() { return this.getRouteParams("prjID"); }
+  get nowSprID() { return this.getRouteParams("sprID"); }
   nowPrj: any;
   options: any;
   daysreports: any;
@@ -136,7 +137,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async ngOnInit() {
-    let sprID = this.getRouteParams("sprID");
+    // let sprID = this.getRouteParams("sprID");
     this.nowPrj = await this.prjsService.getProjectById(this.nowPrjID);
     let boards = await this.prjsService.getAllBoardByCurrentPrj();
     let board = boards?.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)).filter(board => board.category === BoardCategory.SPRINT)[0];
@@ -146,7 +147,7 @@ export class DashboardComponent implements OnInit {
     const strintCycle = this.nowPrj.cycle / 60 / 60 / 24;  // days
     let totalTime = 0, currentTime = 0;
     board?.cards?.forEach(card => {
-      if (!card.belongCardID) return;
+      if (!card.belongCardId) return;
       totalTime += card.totalTime;
       currentTime += (card.currentDuration || 0);
     });
@@ -225,6 +226,8 @@ export class DashboardComponent implements OnInit {
       animationEasing: 'elasticOut',
       animationDelayUpdate: (idx: number) => idx * 5,
     };
+
+    this.translate.use(this.translate.currentLang || this.translate.defaultLang);
   }
 
   showBurndownHelper = false;

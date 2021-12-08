@@ -2,13 +2,14 @@
   <div class="user-info">
     <table>
       <caption><h2 translate>user_info.user_information</h2></caption>
-      <tr><td><b translate>user_info.user_id</b></td>        <td>{{nowUsr?.id}}</td></tr>
+      <tr><td><b translate>user_info.user_id</b></td>        <td>{{nowUsr?._id}}</td></tr>
       <tr><td><b translate>user_info.username</b></td>       <td>{{nowUsr?.username}}</td></tr>
       <tr><td><b translate>user_info.email</b></td>          <td>{{nowUsr?.email}}</td></tr>
-      <tr><td><b translate>user_info.email_verified</b></td> <td>{{nowUsr?.email_verified}}</td></tr>
+      <!-- <tr><td><b translate>user_info.email_verified</b></td> <td>{{nowUsr?.email_verified}}</td></tr> -->
     </table>
   </div>
-  <div class="sign-out" *ngIf="nowUsr && nowUsr == usrService.currentUserInfo()">
+  <!-- <div class="sign-out" *ngIf="nowUsr && nowUsr == usrService.currentUserInfo()"> -->
+  <div class="sign-out" *ngIf="nowUsr && nowUsr._id == usrService.getCurrentUser()?._id">
     <button mat-stroked-button (click)="onSignOutBtnClick()">
       {{"user_info.sign_out" | translate}}
     </button>

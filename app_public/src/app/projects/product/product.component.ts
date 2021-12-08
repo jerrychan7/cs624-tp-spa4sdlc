@@ -11,12 +11,6 @@ import { AddOrEditBoardComponent } from "../add-or-edit-board/add-or-edit-board.
 import { TranslateService } from '@ngx-translate/core';
 import { Board, Card } from 'src/app/Types';
 
-function getDateFromMilliseconds(ms: number | undefined | null): Date {
-  let d = new Date(0);
-  d.setMilliseconds(ms || 0);
-  return d;
-}
-
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -24,32 +18,40 @@ function getDateFromMilliseconds(ms: number | undefined | null): Date {
 })
 export class ProductComponent implements OnInit {
 
-  nowPrjID: string | any;
   nowPrj: any;
-  get nowPrdID() { return this.nowPrd?.id; }
-  private boards: Board[] | null | undefined;
-  set nowPrdID(prdID) {
-    console.log(prdID, this.boards)
-    // let board = this.nowPrd = prdID
-    //   ? this.boards?.filter(board => board.id == prdID)[0]
-    //   : this.boards?.filter(board => board.category === BoardCategory.Product)[0];
-    let board = this.boards?.find(board => board.id == prdID);
-    this.usrStorys = board?.cards?.map(this.iniCard);
-    this.usrStorys.sort((s1: { createdTime: number; }, s2: { createdTime: number; }) => s1.createdTime - s2.createdTime);
-    this.usService.setCurrentPrj(this.nowPrjID);
-    this.usService.setCurrentBoard(board);
-  }
+  boards: Board[] | null | undefined;
   nowPrd: any;
   usrStorys: any;
 
+  private getRouteParams(param: string) {
+    let r: ActivatedRoute | null = this.actRoute;
+    while (r) {
+      let id = r.snapshot.paramMap.get(param);
+      if (id) return id;
+      r = r.parent;
+    }
+    return "";
+  }
+
+  get nowPrjID() { return this.getRouteParams("prjID"); }
+  get nowPrdID() { return this.nowPrd?._id; }
+  set nowPrdID(prdID) {
+    if (this.nowPrdID == prdID) return;
+    let board = this.nowPrd = this.boards?.find(board => board._id == prdID);
+    this.usrStorys = board?.cards;
+    this.usrStorys.sort((s1: { createdTime: number; }, s2: { createdTime: number; }) => s1.createdTime - s2.createdTime);
+    this.usService.setCurrentPrjId(this.nowPrjID);
+    this.usService.setCurrentBoardId(board?._id);
+  }
+
   constructor(
-    private actRoute: ActivatedRoute,
     private router: Router,
-    public prjsService: ProjectsService,
-    private dialog: MatDialog, public usService: UserStoryService,
+    private dialog: MatDialog,
+    private actRoute: ActivatedRoute,
     public translate: TranslateService,
+    public usService: UserStoryService,
+    public prjsService: ProjectsService,
   ) {
-    this.iniCard = this.iniCard.bind(this);
     translate.setTranslation("en", {
       "product_board": {
         "breadcrumb_nav": "Product Backlog",
@@ -62,31 +64,10 @@ export class ProductComponent implements OnInit {
     }, true);
   }
 
-  iniCard(card: Card & {
-    createdTime: Date,
-    updatedTime: Date,
-  } | any) {
-    card.board = this.nowPrd;
-    card.createdTime = getDateFromMilliseconds(card.createdAt);
-    card.updatedTime = getDateFromMilliseconds(card.updatedAt);
-    const td = Math.floor(card.totalTime / 60 / 60 / 24),
-          th = Math.floor(card.totalTime / 60 / 60) - td * 24,
-          tm = Math.floor(card.totalTime / 60) - td * 24 * 60 - th * 60;
-    card.totalTimeString =
-      (td? td + " day" + (td > 1? "s": "") + " ": "") +
-      (th? th + " hour" + (th > 1? "s": "") + " ": "") +
-      (tm? tm + " minute" + (tm > 1? "s": ""): "");
-    return card;
-  }
-
   async ngOnInit() {
-    this.nowPrjID = this.actRoute.parent?.snapshot.paramMap.get('prjID');
     this.nowPrj = await this.prjsService.getProjectById(this.nowPrjID);
-    let boards = await this.prjsService.getAllBoardByCurrentPrj();
-    let prdID = this.actRoute.snapshot.paramMap.get("prdID");
-    this.boards = boards;
-    this.nowPrdID = prdID;
-    console.log(this);
+    this.boards = await this.prjsService.getAllBoardByCurrentPrj();
+    this.nowPrdID = this.getRouteParams("prdID");
     this.actRoute.params.subscribe(params => {
       this.nowPrdID = params["prdID"];
     });
@@ -98,20 +79,20 @@ export class ProductComponent implements OnInit {
   }
 
   onCreateUsrStory() {
-    this.usService.setCurrentCard();
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = "60%";
+    dialogConfig.data = { boardId: this.nowPrdID, };
     this.dialog.open(CreateOrEditCardComponent, dialogConfig);
   }
 
   onModifyUsrStory(usrStory: any) {
-    this.usService.setCurrentCard(usrStory);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.width = "60%";
+    dialogConfig.data = usrStory;
     this.dialog.open(CreateOrEditCardComponent, dialogConfig);
   }
 
@@ -134,12 +115,10 @@ export class ProductComponent implements OnInit {
       // console.log('The dialog was closed', board);
       if (!board) return;
       if (board.delete) {
-        this.router.navigateByUrl(`/prj/${this.nowPrjID}/prd`);
+        this.router.navigateByUrl(`/prj/${this.nowPrjID}`);
         return;
       }
-      // this.nowPrd.name = board.name;
-      // this.nowPrd.description = board.description;
-      this.router.navigateByUrl(`/prj/${this.nowPrdID}/prd/${board.id}`);
+      this.translate.use(this.translate.currentLang || this.translate.defaultLang);
     });
   }
 }

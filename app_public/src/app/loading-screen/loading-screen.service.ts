@@ -5,26 +5,12 @@ import { Subject } from "rxjs";
   providedIn: 'root'
 })
 export class LoadingScreenService {
-
-  constructor() { }
-
-  private _loading: boolean = false;
+  private _loading: number = 0;
   loadingStatus: Subject<boolean> = new Subject();
-
-  get loading():boolean {
-    return this._loading;
-  }
-
-  set loading(value) {
-    this._loading = value;
-    this.loadingStatus.next(value);
-  }
-
-  startLoading() {
-    this.loading = true;
-  }
-
+  isLoading() { return this._loading != 0; }
+  startLoading() { ++this._loading; }
   stopLoading() {
-    this.loading = false;
+    this._loading = Math.max(0, this._loading - 1);
+    this.loadingStatus.next(!!this._loading);
   }
 }

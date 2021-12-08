@@ -134,12 +134,15 @@ export class SignInOrSignUpComponent implements OnInit {
     const {username, password} = this.signInFormGroup.getRawValue();
     let loginFailed = await this.usrService.login(username, password);
     if (!loginFailed) {
-      this.router.navigateByUrl('/user/' + this.usrService.currentUserInfo()?.id);
+      // this.router.navigateByUrl('/user/' + this.usrService.currentUserInfo()?._id);
+      this.router.navigateByUrl('/usr/' + this.usrService.getCurrentUser()?._id);
     }
   }
   async onSignUp() {
     const {username, password, email} = this.signUpFormGroup.getRawValue();
-    await this.usrService.registerUser(username, password, email);
+    // await this.usrService.registerUser(username, password, email);
+    const res = await this.usrService.register(username, password, email);
+    if (res.success) this.toggleFlip();
   }
 
 

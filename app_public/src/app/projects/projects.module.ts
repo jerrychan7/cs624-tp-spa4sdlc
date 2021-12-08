@@ -60,7 +60,9 @@ import { DashboardComponent as SprintDashboardComponent } from './sprint/dashboa
     CommonModule,
     FormsModule, ReactiveFormsModule,
     DragDropModule,
-    NgxEchartsModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import("echarts"),
+    }),
     ProjectsRoutingModule,
     TranslateModule.forChild({
       defaultLanguage: "en",

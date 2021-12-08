@@ -1,6 +1,6 @@
 <mat-toolbar>
   <button mat-stroked-button (click)="onClose()"><mat-icon>clear</mat-icon></button>
-  <span>{{ "add_or_edit_board.title." + (data.board?.id? "modify": "new") | translate }}</span>
+  <span>{{ "add_or_edit_board.title." + (data.board?._id? "modify": "new") | translate }}</span>
 </mat-toolbar>
 <mat-horizontal-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
@@ -8,14 +8,18 @@
       <ng-template matStepLabel>{{ "add_or_edit_board.select_board_type" | translate }}</ng-template>
       <button mat-stroked-button matStepperNext [disabled]="firstFormGroup.invalid">{{ "add_or_edit_board.next_btn" | translate }}</button>
       <div class="select-type">
-        <mat-radio-group formControlName="category" required [disabled]="!!data.board?.id">
+        <mat-radio-group formControlName="category" required [disabled]="!!data.board?._id">
           <mat-label><b>{{ "add_or_edit_board.board_type_text" | translate }} <span class="warn-color">*</span></b></mat-label>
           <mat-radio-button value="Product">{{ "add_or_edit_board.board_type.product" | translate }}</mat-radio-button>
           <mat-radio-button value="Sprint">{{ "add_or_edit_board.board_type.sprint" | translate }}</mat-radio-button>
         </mat-radio-group>
         <p>{{ "add_or_edit_board.cannot_modified" | translate }}</p>
       </div>
-      <div *ngIf="!!data.board?.id" class="delete-board">
+      <div *ngIf="data.board?.category == 'Sprint'" class="archive-board">
+        {{ "add_or_edit_board.archive_board_text" | translate }}
+        <button mat-button color="accent" (click)="onArchive()"><mat-icon>archive</mat-icon>{{ "add_or_edit_board.archive_btn" | translate }}</button>
+      </div>
+      <div *ngIf="!!data.board?._id" class="delete-board">
         {{ "add_or_edit_board.delete_board_text" | translate }}
         <button mat-button color="warn" (click)="onDelete()"><mat-icon>delete</mat-icon>{{ "add_or_edit_board.delete_btn" | translate }}</button>
       </div>
@@ -76,7 +80,7 @@
     <div class="done-page">
       <button mat-stroked-button matStepperPrevious>{{ "add_or_edit_board.back_btn" | translate }}</button>
       <button mat-raised-button (click)="onReset()" color="warn">{{ "add_or_edit_board.reset_btn" | translate }}</button>
-      <button mat-raised-button (click)="onDone()" color="primary">{{ "add_or_edit_board.done_btn." + (data.board?.id? "modify": "create") | translate }}</button>
+      <button mat-raised-button (click)="onDone()" color="primary">{{ "add_or_edit_board.done_btn." + (data.board?._id? "modify": "create") | translate }}</button>
       <p>{{ "add_or_edit_board.done_text" | translate }}</p>
     </div>
   </mat-step>

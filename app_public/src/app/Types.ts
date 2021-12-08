@@ -18,10 +18,10 @@ export const enum CardStatus {
   DONE = 'Done',
 };
 export interface Card extends Record {
-  id: ID,
+  _id: ID,
   boardId: ID,
   board?: Board,
-  belongCardID?: ID,
+  belongCardId?: ID,
   title: string,
   subTitle?: string,
   content?: string,
@@ -34,9 +34,10 @@ export interface Card extends Record {
 export const enum BoardCategory {
   PRODUCT = 'Product',
   SPRINT = 'Sprint',
+  ARCHIVE = 'Archive',
 };
 export interface Board extends Record {
-  id: ID,
+  _id: ID,
   name: string,
   category: BoardCategory,
   cycle?: Timestamp,  // record sprint cycle length
@@ -48,15 +49,16 @@ export interface Board extends Record {
 };
 
 export interface User extends Record {
-  id: ID,
+  _id: ID,
   username: string,
   email: string,
-  email_verified: boolean,
+  email_verified?: boolean,
+  projectId: Array<ID>,
   projects?: Project[],
 };
 
 export interface Project extends Record {
-  id: ID,
+  _id: ID,
   name: string,
   firstSprintStartAt: DateTime,
   cycle: Timestamp,
@@ -67,7 +69,7 @@ export interface Project extends Record {
 
 // SprintRecord <--1:n--> DayHistory <--1:n--> DayHistoryReport
 export interface SprintRecord extends Record {
-  id: ID,
+  _id: ID,
   sprintId: ID,
   daysHistory: DayHistory[],
 };

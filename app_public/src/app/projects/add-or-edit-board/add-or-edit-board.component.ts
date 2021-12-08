@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { BoardsService } from './boards.service';
+import { BoardCategory } from 'src/app/Types';
 
 @Component({
   selector: 'app-add-or-edit-board',
@@ -14,14 +16,25 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class AddOrEditBoardComponent implements OnInit {
 
-  @ViewChild("stepper")
-  private stepper!: MatStepper;
+  @ViewChild("stepper") private stepper!: MatStepper;
+  filteredOptions: Observable<string[]>[] = [];
+  get formArrayLangs(): FormArray { return <FormArray>this.secondFormGroup.controls["langs"]; }
+  firstFormGroup = this.formBuilder.group({
+    category: ['', Validators.required],
+  });
+  secondFormGroup = this.formBuilder.group({
+    name: ['', Validators.required],
+    description: [''],
+    lang: [this.translate.currentLang || this.translate.defaultLang, Validators.required],
+    langs: this.formBuilder.array([]),
+  });
 
   constructor(
-    public dialogRef: MatDialogRef<AddOrEditBoardComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
     private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
+    private boradService: BoardsService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<AddOrEditBoardComponent>,
     public translate: TranslateService,
   ) {
     this.initAutoComleteGroup = this.initAutoComleteGroup.bind(this);
@@ -39,6 +52,8 @@ export class AddOrEditBoardComponent implements OnInit {
           "sprint": "Sprint Backlog",
         },
         "cannot_modified": "This field cannot be modified after creation.",
+        "archive_board_text": "OR, you want to archive this Sprint board?",
+        "archive_btn": "archive",
         "delete_board_text": "OR, you want to delete this board?",
         "delete_btn": "DELETE",
         "fill_board_info": "Fill board information",
@@ -71,6 +86,8 @@ export class AddOrEditBoardComponent implements OnInit {
           "sprint": "Sprint代办列表",
         },
         "cannot_modified": "创建板块后无法修改此字段。",
+        "archive_board_text": "或者，你想要归档该Sprint板块？",
+        "archive_btn": "归档",
         "delete_board_text": "或者，您要删除此板块？",
         "delete_btn": "删除",
         "fill_board_info": "填写板块信息",
@@ -91,29 +108,18 @@ export class AddOrEditBoardComponent implements OnInit {
     }, true);
   }
 
-  firstFormGroup: FormGroup = this.formBuilder.group({
-    category: ['', Validators.required],
-  });
-  secondFormGroup: FormGroup = this.formBuilder.group({
-    name: ['', Validators.required],
-    description: [''],
-    lang: [this.translate.currentLang || this.translate.defaultLang, Validators.required],
-    langs: this.formBuilder.array([]),
-  });
-  filteredOptions: Observable<string[]>[] = [];
-
-  get formArrayLangs(): FormArray { return <FormArray>this.secondFormGroup.controls["langs"]; }
-
   ngOnInit(): void {
     this.initOrResetFormGroup();
     this.initAutoComleteGroup(this.secondFormGroup);
     (this.secondFormGroup.controls["langs"] as FormArray).controls.forEach(this.initAutoComleteGroup as any);
   }
+
   private initAutoComleteGroup(group: FormGroup): FormGroup {
     this.filteredOptions.push(group.controls["lang"].valueChanges.pipe(
       startWith(""),
       // autoCompleteFilter
       map((value: string): string[] => {
+        value = value || "";
         const filterValue = value.toLowerCase();
         return this.translate.getLangs().filter(option => option.toLowerCase().includes(filterValue));
       }),
@@ -126,19 +132,20 @@ export class AddOrEditBoardComponent implements OnInit {
     this.firstFormGroup.setValue({
       category: board?.category || '',
     });
-    this.secondFormGroup.setValue({
+    this.secondFormGroup.patchValue({
       name: board?.name || '',
       description: board?.description || '',
       lang: board?.langs?.name.default || this.translate.currentLang || this.translate.defaultLang,
-      langs: this.formBuilder.array(board?.langs
-        ? Object.keys(board.langs.name).filter(lang => lang != "default" && lang != board?.langs?.name.default).map(lang =>
-            this.formBuilder.group({
-              lang: [lang, Validators.required],
-              name: [board.langs.name[lang], Validators.required],
-              description: [board.langs.description[lang]],
-            }))
-        : []),
     });
+    this.secondFormGroup.setControl("langs", this.formBuilder.array(board?.langs
+      ? Object.keys(board.langs.name)
+        .filter(lang => lang != "default" && lang != board.langs.name.default).map(lang =>
+          this.formBuilder.group({
+            lang: [lang, Validators.required],
+            name: [board.langs.name[lang], Validators.required],
+            description: [board.langs.description[lang]],
+          }))
+      : []));
   }
 
   onAddLang() {
@@ -160,9 +167,11 @@ export class AddOrEditBoardComponent implements OnInit {
     this.initOrResetFormGroup();
   }
   onClose(data: any = undefined) {
+    this.onReset();
     this.snackBarRef?.closeWithAction();
     this.dialogRef.close(data);
   }
+
   async onDone() {
     let {name, description, lang, langs} = this.secondFormGroup.value;
     description = langs.length
@@ -178,35 +187,48 @@ export class AddOrEditBoardComponent implements OnInit {
         }, { [lang]: name, default: lang, }))
       : name;
     const {category} = this.firstFormGroup.value;
-    // const board = this.data.board?.id
-    //   ? await this.api.UpdateBoard({
-    //     id: this.data.board.id,
-    //     name, description,
-    //   })
-    //   : await this.api.CreateBoard({
-    //     name, description, category,
-    //     projectId: this.data.project.id,
-    //   });
-    if (category == "Sprint") {
-      // const boardId = board.id;
-      // await this.api.CreateCard({boardId,  title: "Process", });
-      // await this.api.CreateCard({boardId,  title: "Test", });
-      // await this.api.CreateCard({boardId,  title: "Done", });
-    }
-    // console.log(board)
-    // this.onClose(board);
+    let board = await (this.data.board?._id
+      ? this.boradService.modifyBoard({
+        _id: this.data.board?._id,
+        name, description, category,
+      })
+      : this.boradService.createBoard({
+        name, description, category,
+        projectId: this.data.project._id,
+        cards: category == BoardCategory.PRODUCT? []
+          : [
+            { title: "Process", },
+            { title: "Test", },
+            { title: "Done", },
+          ]
+      }));
+    this.onClose(board);
   }
 
   snackBarRef: any;
   async onDelete() {
-    const num = this.data.project.boards.items.filter((board: any) => board.category === this.data.board.category).length;
+    const num = this.data.project.boards.filter((board: any) => board.category === this.data.board.category).length;
     if (num <= 1) {
       this.snackBarRef = this.snackBar.open(`Delete Error: Every project must have a ${this.data.board.category} board.`, "OK");
     }
     else {
-      // await this.api.DeleteCard({}, {boardId: {eq: this.data.board.id}}).catch(e => {});
-      // await this.api.DeleteBoard({ id: this.data.board.id });
+      await this.boradService.delectBoard(this.data.board);
       this.onClose({delete: true});
+    }
+  }
+
+  async onArchive() {
+    const num = this.data.project.boards.filter((board: any) => board.category === this.data.board.category).length;
+    if (num <= 1) {
+      this.snackBarRef = this.snackBar.open(`Delete Error: Every project must have a ${this.data.board.category} board.`, "OK");
+    }
+    else {
+      const board = await this.boradService.modifyBoard({
+        _id: this.data.board._id,
+        name: this.data.board.name,
+        category: BoardCategory.ARCHIVE,
+      });
+      this.onClose(board);
     }
   }
 }

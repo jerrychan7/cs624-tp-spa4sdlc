@@ -1,96 +1,83 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { ApiService } from 'src/app/api.service';
+import { CardStatus } from 'src/app/Types';
+import { BoardsService } from '../add-or-edit-board/boards.service';
+// import { ProjectsService } from '../projects.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserStoryService {
 
-  constructor() { }
+  constructor(
+    private api: ApiService,
+    private boardService: BoardsService,
+  ) { }
 
   currentPrjId: string | any;
-  setCurrentPrj(prjId: string | any) {
+  setCurrentPrjId(prjId: string | any) {
     this.currentPrjId = prjId;
   }
-  currentBoard: string | any;
-  setCurrentBoard(board: string | any) {
-    this.currentBoard = board;
-  }
-  currentCard: string | any;
-  setCurrentCard(card?: any | undefined) {
-    this.currentCard = card;
-    this.populateForm(card);
+  currentBoardId: string | any;
+  setCurrentBoardId(board: string | any) {
+    this.currentBoardId = board;
   }
 
-  currentCardFrom = new FormGroup({
-    id: new FormControl(null),
-    boardId: new FormControl(null),
-    title: new FormControl(""),
-    subTitle: new FormControl(""),
-    content: new FormControl(""),
-    totalTime: new FormControl(""),
-  });
-
-  createOrModifyCard(card = this.currentCardFrom.value) {
-    if (this.currentCardFrom.controls["id"].value)
-      return this.modifyCard(card);
-    return this.insertCard(card);
-  }
-
-  initializeFormGroup() {
-    this.populateForm();
-  }
-
-  populateForm(card:any = {}) {
-    this.currentCardFrom.reset();
-    card.totalTime = card.totalTime || 0;
-    const th = Math.floor(card.totalTime / 60 / 60),
-          tm = Math.floor(card.totalTime / 60) - th * 60;
-    this.currentCardFrom.setValue({
-      id: card.id || null,
-      boardId: card.boardId || this.currentBoard?.id || null,
-      title: card.title || "",
-      subTitle: card.subTitle || "",
-      content: card.content || "",
-      totalTime: (card.totalTime? th + " : " + tm: ""),
-    });
-  }
-
-  async insertCard(card = this.currentCardFrom.value) {
-    const [th, tm] = card.totalTime.split(":").map((s: any) => Number(s) || 0),
+  async insertCard(cardInfo: any = {}) {
+    const [th, tm] = cardInfo.totalTime.split(":").map((s: any) => Number(s) || 0),
           totalTime = ((th || 0) * 60 + (tm || 0)) * 60;
-    // await this.api.CreateCard({
-    //   boardId: card.boardId || this.currentBoard.id,
-    //   title: card.title,
-    //   subTitle: card.subTitle,
-    //   content: card.content,
-    //   totalTime,
-    //   status: CardStatus.stop,
-    // });
+    if (!this.currentPrjId || !this.currentBoardId) return "connot get id";
+    let boardId = cardInfo.boardId || this.currentBoardId;
+    const board = this.boardService.boards?.find(b => b._id == boardId);
+    if (!board) return "connot get board";
+    let card = await this.api.makeApiCall("post", `prj/${this.currentPrjId}/board/${this.currentBoardId}/card`, {
+      body: {
+        boardId,
+        title: cardInfo.title,
+        subTitle: cardInfo.subTitle,
+        content: cardInfo.content,
+        totalTime,
+        status: CardStatus.STOP,
+      }
+    });
+    board.cards?.push(card);
+    this.boardService.initBoard(board);
+    return card;
   }
 
-  async modifyCard(card = this.currentCardFrom.value) {
-    if (card.title != this.currentCard.title
-      || card.subTitle != this.currentCard.subTitle
-      || card.content != this.currentCard.content
-      || card.totalTime != this.currentCard.totalTime) {
-      const [th, tm] = card.totalTime.split(":").map((s: any) => Number(s) || 0),
-            totalTime = ((th || 0) * 60 + (tm || 0)) * 60;
-      // await this.api.UpdateCard({
-      //   id: this.currentCard.id,
-      //   title: card.title,
-      //   subTitle: card.subTitle,
-      //   content: card.content,
-      //   totalTime,
-      // });
+  async modifyCard(cardInfo: any = {}) {
+    // console.log(cardInfo);
+    if (cardInfo.totalTime) {
+      const [th, tm] = (cardInfo.totalTime || "1:0").split(":").map((s: any) => Number(s) || 0);
+      cardInfo.totalTime = ((th || 0) * 60 + (tm || 0)) * 60;
     }
-    return "";
+    if (!this.currentPrjId || !this.currentBoardId) return "connot get id";
+
+    const oldBoardId = this.currentBoardId;
+    const newBoardId = cardInfo.boardId || this.currentBoardId;
+
+    let card = await this.api.makeApiCall("put", `prj/${this.currentPrjId}/board/${oldBoardId}/card/${cardInfo._id}`, {
+      body: cardInfo
+    });
+    const oldBoard = this.boardService.boards?.find(b => b._id == oldBoardId);
+    const newBoard = oldBoardId == newBoardId? oldBoard: this.boardService.boards?.find(b => b._id == newBoardId);
+    let i = oldBoard?.cards?.findIndex(c => c._id == cardInfo._id) ?? -1;
+    if (i != -1) oldBoard?.cards?.splice(i, 1);
+    newBoard?.cards?.push(card);
+    this.boardService.initBoard(newBoard);
+    return card;
   }
 
-  async removeCard(card: any) {
-    // await this.api.DeleteCard({
-    //   id: card.id
-    // });
+  async removeCard(cardInfo: any) {
+    if (!this.currentPrjId || !this.currentBoardId) return "connot get id";
+    let boardId = cardInfo.boardId || this.currentBoardId;
+    const board = this.boardService.boards?.find(b => b._id == boardId);
+    if (!board) return "connot get board";
+    await this.api.makeApiCall("delete", `prj/${this.currentPrjId}/board/${this.currentBoardId}/card/${cardInfo._id}`);
+    let i = board.cards?.findIndex(c => c._id == cardInfo._id) ?? -1;
+    if (i != -1) board.cards?.splice(i, 1);
+    this.boardService.initBoard(board);
+    return "";
   }
 
 }

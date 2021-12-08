@@ -14,7 +14,7 @@ export class UserComponent implements OnInit {
   nowUsr: User | null = null;
   set usrID(uid: string | null) {
     if (!uid) return;
-    this.usrService.asyncCurrentUserInfo();
+    // this.usrService.asyncCurrentUserInfo();
     this.usrService.getUserByID(uid).then(usr => this.nowUsr = usr);
   }
 
@@ -53,7 +53,7 @@ export class UserComponent implements OnInit {
 
   onSignOutBtnClick() {
     this.usrService.signOut();
-    this.router.navigateByUrl('/user/sign-in-or-sign-up');
+    this.router.navigateByUrl('/usr/sign-in-or-sign-up');
   }
 
 }

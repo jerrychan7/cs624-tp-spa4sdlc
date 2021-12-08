@@ -8,5 +8,5 @@
   <tr><td><b translate>project_info.first_sprint_start_at</b></td>  <td>{{project?.firstSprintStartAtString}}</td></tr>
   <tr><td><b translate>project_info.sprint_cycle_length</b></td>    <td>{{project?.cycleString}}</td></tr>
   <tr><td><b translate>project_info.description</b></td>            <td>{{project?.description}}</td></tr>
-  <tr><td><b translate>project_info.members</b></td>                <td><span *ngFor="let members of project?.members">{{members.member?.username}}</span></td></tr>
+  <tr><td><b translate>project_info.members</b></td>                <td><span *ngFor="let member of project?.members">{{member.username}}</span></td></tr>
 </table>

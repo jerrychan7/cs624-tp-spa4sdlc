@@ -1,79 +1,87 @@
-import { Injectable } from '@angular/core';
+import { InjectionToken } from '@angular/core';
+
+const BROWSER_STORAGE = new InjectionToken<Storage>('Browser Storage', {
+  providedIn: 'root',
+  factory: () => localStorage
+});
+
+import { Injectable, Inject } from '@angular/core';
 import { User } from '../Types';
-import { USERS } from './mock.users';
+import { ApiService } from '../api.service';
+
+interface AuthResponse {
+  token: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor() {
-    // localStorage.clear();
-  }
-
+  private tokenName = "user-token";
   private currentUser: User | null = null;
-  currentUserInfo() { return this.currentUser; }
 
-  async getAllUsers(): Promise<User[]> {
-    // Simulate network delay.
-    await new Promise(s => setTimeout(s, 500));
-    return USERS;
-  }
+  constructor(
+    private api: ApiService,
+    @Inject(BROWSER_STORAGE) private storage: Storage,
+  ) { }
 
-  async asyncCurrentUserInfo(): Promise<User | null> {
-    if (this.currentUser) return this.currentUser;
-    let uid = localStorage.getItem("userID");
-    if (uid) {
-      return this.currentUser = await this.getUserByID(uid);
-    }
-    return null;
-    // // Simulate network delay.
-    // await new Promise(s => setTimeout(s, 500));
-    // const users = await this.getAllUsers();
-    // const user = this.currentUser = users[0];
-    // localStorage.setItem("userID", user.id);
-    // return user;
+  private getToken(): string {
+    return this.storage.getItem(this.tokenName) || "";
   }
 
-  private userPool:Map<string, User> = new Map();
-  async getUserByID(id: string): Promise<User | null> {
-    // Simulate network delay.
-    await new Promise(s => setTimeout(s, 500));
-    if (this.userPool.has(id))
-      return this.userPool.get(id) || null;
-    const users = await this.getAllUsers();
-    const user = users.find(user => user.id === id) || null;
-    user && this.userPool.set(user.id, user);
-    return user;
+  private saveToken(token: string): void {
+    this.storage.setItem(this.tokenName, token);
   }
 
-  async registerUser(username: string, password: string, email: string) {
-    // Simulate network delay.
-    await new Promise(s => setTimeout(s, 500));
-    const usr = <any>{
-      id: "user id " + (USERS.length + 1),
-      username,
-      password,
-      email,
-      email_verified: false,
-    };
-    USERS.push(usr);
-    this.userPool.set(usr.id, usr);
+  private decodeTokenToUser(token: string) {
+    const { name, ...othersField } = JSON.parse(atob(token.split('.')[1]));
+    return { ...othersField, username: name };
   }
-  async login(username: string, password: string) {
-    // Simulate network delay.
-    await new Promise(s => setTimeout(s, 500));
-    const usr = USERS.find(u => u.username == username);
-    if (usr) {
-      this.currentUser = usr;
-      localStorage.setItem("userID", usr.id);
-      return false;
-    }
-    else return true;
+
+  public async login(username: string, password: string): Promise<any> {
+    const user = { name: username, password, };
+    return this.api.makeApiCall("put", "usr", { body: user, })
+      .then((authResp: AuthResponse) => {
+        this.saveToken(authResp.token);
+        this.currentUser = this.decodeTokenToUser(authResp.token);
+      });
   }
-  async signOut() {
-    localStorage.removeItem("userID");
-    console.log(localStorage.getItem("userID"));
+
+  public async register(username: string, password: string, email: string): Promise<any> {
+    const user = { name: username, password, email, };
+    return this.api.makeApiCall("post", "usr", { body: user })
+      .then((authResp: AuthResponse) => {
+        this.saveToken(authResp.token);
+        return {success: true};
+      });
+  }
+
+  public async signOut() {
     this.currentUser = null;
+    this.storage.removeItem(this.tokenName);
+  }
+
+  public isLoggedIn(): boolean {
+    const token: string = this.getToken();
+    return (!!token) && JSON.parse(atob(token.split('.')[1])).exp > (Date.now() / 1000);
+  }
+
+  public getCurrentUser(): User | null {
+    if (!this.isLoggedIn()) return null;
+    if (this.currentUser) return this.currentUser;
+    return this.currentUser = this.decodeTokenToUser(this.getToken());
+  }
+
+  public async getUserByID(id: string): Promise<User | null> {
+    if (id == this.currentUser?._id) return this.currentUser;
+    return this.api.makeApiCall("get", "usr/" + id)
+    .then((resp: AuthResponse) => this.decodeTokenToUser(resp.token), () => Promise.resolve(null));
+  }
+
+  public async getUserByNameOrEmail({name = "", email = ""}: any = {}) {
+    if (!name && !email) return null;
+    const usrs = await this.api.makeApiCall("get", `usr?name=${name}&email=${email}`);
+    return this.decodeTokenToUser(usrs[0].token);
   }
 }

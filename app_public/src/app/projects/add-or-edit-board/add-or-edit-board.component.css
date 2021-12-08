@@ -24,13 +24,15 @@ mat-toolbar span {
 .select-type mat-radio-group {
     margin-bottom: 12px;
 }
-.delete-board {
-    margin-top: 10px;
+.delete-board, .archive-board {
+    margin-top: 1.5em;
+    position: relative;
 }
-.delete-board button {
-    float: right;
+.delete-board button, .archive-board button {
+    position: absolute;
+    right: 0;
 }
-.delete-board button mat-icon {
+.delete-board button mat-icon, .archive-board button mat-icon {
     vertical-align: sub;
 }
 .full-info {

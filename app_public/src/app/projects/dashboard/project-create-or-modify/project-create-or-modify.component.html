@@ -1,1 +1,33 @@
-<p>project-create-or-modify works!</p>
+<mat-toolbar>
+  <span>{{ "create_or_modify_project.title." + (isModify? "modify": "create") | translate }}</span>
+  <span class="fill-remaining-space"></span>
+  <button mat-stroked-button (click)="onClose()"><mat-icon>clear</mat-icon></button>
+</mat-toolbar>
+<form [formGroup]="projectForm" class="normal-form">
+  <input type="hidden" formControlName="_id" />
+  <mat-form-field>
+    <mat-label>{{ "create_or_modify_project.project_name" | translate }}</mat-label>
+    <input matInput formControlName="name" />
+    <mat-error>{{ "create_or_modify_project.field_mandatory" | translate }}</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{ "create_or_modify_project.members" | translate }}</mat-label>
+    <input matInput formControlName="members" placeholder="{{ 'create_or_modify_project.members_placeholder' | translate }}"/>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{ "create_or_modify_project.sprint_cycle_time" | translate }}</mat-label>
+    <input matInput formControlName="cycle" placeholder="{{ 'create_or_modify_project.sprint_cycle_time_placeholder' | translate }}"/>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>{{ "create_or_modify_project.first_sprint_start_at" | translate }}</mat-label>
+    <input matInput formControlName="firstSprintStartAt" [matDatepicker]="picker">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{ "create_or_modify_project.description" | translate }}</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" (click)="onCreateOrModify()"
+    [disabled]="!isEdited || projectForm.invalid">{{ "create_or_modify_project.submit_btn." + (isModify? "confirm": "create") | translate }}</button>
+</form>
